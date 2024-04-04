@@ -1,9 +1,9 @@
 // Workspace models
 export interface WorkspaceResponse {
-  pagelen: number;
-  page: number;
-  size: number;
-  values: Array<{
+  readonly pagelen: number;
+  readonly page: number;
+  readonly size: number;
+  readonly values: Array<{
     uuid: string;
     links: {
       owners: {href: string};
@@ -76,12 +76,12 @@ interface Repository {
 }
 
 export interface RepositoriesResponse {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  previous: string;
-  values: Repository[];
+  readonly size: number;
+  readonly page: number;
+  readonly pagelen: number;
+  readonly next: string;
+  readonly previous: string;
+  readonly values: Repository[];
 }
 
 // Webhook models

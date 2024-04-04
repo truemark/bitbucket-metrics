@@ -7,7 +7,7 @@ import {
   WorkspaceResponse,
 } from './bitbucket-services-model';
 
-export async function getWorkspacesAsync(): Promise<WorkspaceResponse> {
+export async function getWorkspacesAsync(): Promise<WorkspaceResponse | null> {
   const accessToken = getAuthToken();
   try {
     const response = await axios.get(
@@ -19,11 +19,11 @@ export async function getWorkspacesAsync(): Promise<WorkspaceResponse> {
         },
       }
     );
-    console.log(
+    console.info(
       `Repository Response: ${response.status} ${response.statusText}`
     );
     const workspaceResponse = response.data as WorkspaceResponse;
-    console.log(workspaceResponse);
+    console.info(workspaceResponse);
     return workspaceResponse;
   } catch (err) {
     console.error(err);
@@ -33,7 +33,7 @@ export async function getWorkspacesAsync(): Promise<WorkspaceResponse> {
 
 export async function getRepositoriesAsync(
   workspace: string
-): Promise<RepositoriesResponse> {
+): Promise<RepositoriesResponse | null> {
   const accessToken = getAuthToken();
   try {
     const response = await axios.get(
@@ -45,11 +45,11 @@ export async function getRepositoriesAsync(
         },
       }
     );
-    console.log(
+    console.info(
       `Repository Response: ${response.status} ${response.statusText}`
     );
     const repositoriesResponse = response.data as RepositoriesResponse;
-    console.log(repositoriesResponse);
+    console.info(repositoriesResponse);
     return repositoriesResponse;
   } catch (err) {
     console.error(err);
@@ -61,7 +61,7 @@ export async function createRepositoryWebhookAsync(
   workspace: string,
   repositoryUuid: string,
   webhookRequest: WebhookRequest
-): Promise<WebhookResponse> {
+): Promise<WebhookResponse | null> {
   const accessToken = getAuthToken();
   try {
     const response = await axios.post(
@@ -75,9 +75,9 @@ export async function createRepositoryWebhookAsync(
         },
       }
     );
-    console.log(`Webhook Response: ${response.status} ${response.statusText}`);
+    console.info(`Webhook Response: ${response.status} ${response.statusText}`);
     const webhookResponse = response.data as WebhookResponse;
-    console.log(webhookResponse);
+    console.info(webhookResponse);
     return webhookResponse;
   } catch (err) {
     console.error(err);
