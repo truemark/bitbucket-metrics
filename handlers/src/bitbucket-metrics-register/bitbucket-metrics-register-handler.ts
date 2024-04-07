@@ -1,15 +1,28 @@
-import {
-  APIGatewayProxyEventV2,
-  APIGatewayProxyStructuredResultV2,
-} from 'aws-lambda';
+import {Context} from 'aws-lambda';
+
+interface CronEvent {
+  version: string;
+  id: string;
+  'detail-type': string;
+  source: string;
+  account: string;
+  time: string;
+  region: string;
+  resources: string[];
+  detail: any;
+}
 
 export async function handler(
-  event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyStructuredResultV2> {
+  event: CronEvent,
+  context: Context
+): Promise<{statusCode: number; body: string}> {
+  console.info('Received event:', JSON.stringify(event, null, 2));
+  console.info('Context:', JSON.stringify(context, null, 2));
+
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'Hello from JWT Lambda!',
+      message: 'Cron Lambda executed successfully!',
       input: event,
     }),
   };

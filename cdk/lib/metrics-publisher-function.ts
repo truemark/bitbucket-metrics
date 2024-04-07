@@ -14,7 +14,7 @@ export interface MainFunctionProps extends ExtendedNodejsFunctionProps {
   readonly apiGateway: HttpApi;
 }
 
-export class MainFunction extends ExtendedNodejsFunction {
+export class MetricsPublisherFunction extends ExtendedNodejsFunction {
   constructor(scope: Construct, id: string, props: MainFunctionProps) {
     super(scope, id, {
       entry: path.join(
@@ -23,7 +23,8 @@ export class MainFunction extends ExtendedNodejsFunction {
         '..',
         'handlers',
         'src',
-        'main-handler.ts'
+        'metrics-publisher',
+        'metrics-publisher-handler.ts'
       ),
       memorySize: 512,
       runtime: Runtime.NODEJS_20_X,
@@ -40,8 +41,8 @@ export class MainFunction extends ExtendedNodejsFunction {
 
     const integration = new HttpLambdaIntegration('Integration', this);
     props.apiGateway.addRoutes({
-      path: '/{proxy+}',
-      methods: [HttpMethod.ANY],
+      path: '/bitbucket/metrics-publishers',
+      methods: [HttpMethod.POST],
       integration,
     });
   }

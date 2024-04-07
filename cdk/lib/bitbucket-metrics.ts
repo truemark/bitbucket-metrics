@@ -1,7 +1,7 @@
 import {Construct} from 'constructs';
 import {HttpApi} from 'aws-cdk-lib/aws-apigatewayv2';
 import {Stack, Stage} from 'aws-cdk-lib';
-import {MainFunction} from './main-function';
+import {MetricsPublisherFunction} from './metrics-publisher-function';
 import {BitbucketJwtReceiverFunction} from './bitbucket-jwt-function';
 import {BitbucketMetricsRegisterFunction} from './bitbucket-metrics-register-function';
 
@@ -16,7 +16,7 @@ export class BitbucketMetrics extends Construct {
       apiName: `${stage?.stageName}${stack?.stackName}Gateway`,
     });
 
-    new MainFunction(this, 'Main', {
+    new MetricsPublisherFunction(this, 'BitbucketMetricsPublisher', {
       apiGateway: httpApi,
     });
 

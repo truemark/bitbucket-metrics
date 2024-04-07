@@ -3,9 +3,8 @@ import {Construct} from 'constructs';
 import * as path from 'path';
 import {Architecture, Runtime} from 'aws-cdk-lib/aws-lambda';
 import {RetentionDays} from 'aws-cdk-lib/aws-logs';
-import {PolicyStatement} from 'aws-cdk-lib/aws-iam';
 import {HttpLambdaIntegration} from 'aws-cdk-lib/aws-apigatewayv2-integrations';
-import {MainFunctionProps} from './main-function';
+import {MainFunctionProps} from './metrics-publisher-function';
 import {HttpMethod} from 'aws-cdk-lib/aws-apigatewayv2';
 
 export class BitbucketJwtReceiverFunction extends ExtendedNodejsFunction {
@@ -26,16 +25,9 @@ export class BitbucketJwtReceiverFunction extends ExtendedNodejsFunction {
       logRetention: RetentionDays.ONE_WEEK,
     });
 
-    this.addToRolePolicy(
-      new PolicyStatement({
-        actions: ['cloudwatch:PutMetricData'],
-        resources: ['*'],
-      })
-    );
-
     const integration = new HttpLambdaIntegration('Integration', this);
     props.apiGateway.addRoutes({
-      path: '/bitbucket/jwt-receiver',
+      path: '/bitbucket/jwt-receivers',
       methods: [HttpMethod.POST],
       integration,
     });
