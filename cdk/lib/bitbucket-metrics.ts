@@ -2,6 +2,7 @@ import {Construct} from 'constructs';
 import {HttpApi} from 'aws-cdk-lib/aws-apigatewayv2';
 import {Stack, Stage} from 'aws-cdk-lib';
 import {MainFunction} from './main-function';
+import {BitbucketJwtReceiverFunction} from './bitbucket-jwt-function';
 
 export class BitbucketMetrics extends Construct {
   constructor(scope: Construct, id: string) {
@@ -15,6 +16,10 @@ export class BitbucketMetrics extends Construct {
     });
 
     new MainFunction(this, 'Main', {
+      apiGateway: httpApi,
+    });
+
+    new BitbucketJwtReceiverFunction(this, 'BitbucketJwtReceiver', {
       apiGateway: httpApi,
     });
   }
