@@ -4,7 +4,7 @@ import {
   getWorkspacesAsync,
 } from './bitbucket-services-helper';
 import {registerRepositoryWebhooks} from './bitbucket-webhook-registration';
-import {readJsonToObject} from './file-reader-test-helper';
+import {readJsonToObject} from '../file-reader-test-helper';
 
 jest.mock('./bitbucket-services-helper');
 
