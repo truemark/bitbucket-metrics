@@ -21,7 +21,7 @@ export async function handler(
   console.info('Context:', JSON.stringify(context, null, 2));
 
   // Register webhooks for Bitbucket repositories
-  registerRepositoryWebhooks('BitbucketMetricsCallback', [
+  await registerRepositoryWebhooks('BitbucketMetricsCallback', [
     'repo:push',
     'peline:started',
     'pipeline:fulfilled',

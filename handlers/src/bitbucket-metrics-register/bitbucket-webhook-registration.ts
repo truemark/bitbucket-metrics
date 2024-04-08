@@ -10,7 +10,9 @@ export async function registerRepositoryWebhooks(
   webhookName: string,
   repositoryEvents: string[]
 ): Promise<void> {
-  const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME!;
+  const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME
+    ? process.env.SCM_SECRET_MANAGER_NAME
+    : 'BitbucketScmSecret';
   console.info(`SCM Secret Manager Name: ${scmSecretManagerName}`);
   const scmData = await getScmData(scmSecretManagerName);
   if (!scmData || !scmData.workspaces || scmData.workspaces.length === 0) {
@@ -19,14 +21,17 @@ export async function registerRepositoryWebhooks(
     throw new Error(errorMassage);
   }
   const callBackUrl = scmData.callBackUrl;
-  console.info(`Workspaces: ${scmData.workspaces}`);
+  console.info(`Workspaces: ${scmData.workspaces.length}`);
   for (const workspace of scmData.workspaces) {
     console.info(`Workspace: ${workspace.name}`);
     const repositories = await getRepositoriesAsync(workspace);
     if (repositories) {
       for (const repository of repositories.values) {
         console.info(`Repository: ${repository.uuid}`);
-        if (repository!.links!.hooks!.name === webhookName) {
+        if (
+          repository!.links!.hooks!.name === webhookName ||
+          !repository.name.includes('tau-test')
+        ) {
           console.info(
             `Webhook ${webhookName} already exists for repository ${repository.name} in workspace ${workspace.name}`
           );

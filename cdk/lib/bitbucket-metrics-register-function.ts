@@ -9,6 +9,7 @@ import {RetentionDays} from 'aws-cdk-lib/aws-logs';
 import {Rule, Schedule} from 'aws-cdk-lib/aws-events';
 import {LambdaFunction} from 'aws-cdk-lib/aws-events-targets';
 import {Secret} from 'aws-cdk-lib/aws-secretsmanager';
+import {Duration} from "aws-cdk-lib";
 
 const SCM_SECRETS_MANAGER_NAME = 'BitbucketScmSecret';
 
@@ -27,14 +28,17 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
         'bitbucket-metrics-register',
         'bitbucket-metrics-register-handler.ts'
       ),
-      memorySize: 512,
+      memorySize: 1024,
       runtime: Runtime.NODEJS_20_X,
       architecture: Architecture.ARM_64,
       logRetention: RetentionDays.ONE_WEEK,
+      timeout: Duration.minutes(10),
       environment: {
         SCM_SECRETS_MANAGER_NAME: SCM_SECRETS_MANAGER_NAME,
       },
     });
+
+    process.env.SCM_SECRET_MANAGER_NAME = SCM_SECRETS_MANAGER_NAME;
 
     const rule = new Rule(this.stack, 'BitbucketMetricsRegisterRule', {
       schedule: Schedule.expression(props.cronExpression),

@@ -16,16 +16,17 @@ export class BitbucketMetrics extends Construct {
       apiName: `${stage?.stageName}${stack?.stackName}Gateway`,
     });
 
-    new MetricsPublisherFunction(this, 'BitbucketMetricsPublisher', {
+    new MetricsPublisherFunction(this, 'Publisher', {
       apiGateway: httpApi,
     });
 
-    new BitbucketJwtReceiverFunction(this, 'BitbucketJwtReceiver', {
+    new BitbucketJwtReceiverFunction(this, 'JwtReceiver', {
       apiGateway: httpApi,
     });
 
-    new BitbucketMetricsRegisterFunction(this, 'BitbucketMetricsRegister', {
-      cronExpression: 'cron(0 12 * * ? *)',
+    new BitbucketMetricsRegisterFunction(this, 'Register', {
+      //cronExpression: 'cron(0 12 * * ? *)',
+      cronExpression: 'cron(*/10 * * * ? *)',
     });
   }
 }
