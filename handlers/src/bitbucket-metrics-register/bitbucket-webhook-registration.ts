@@ -2,25 +2,27 @@
 import {
   createRepositoryWebhookAsync,
   getRepositoriesAsync,
-  getWorkspacesAsync,
 } from './bitbucket-services-helper';
 import {WebhookRequest} from './bitbucket-services-model';
+import {getScmData} from './bitbucket-auth-helper';
 
 export async function registerRepositoryWebhooks(
   webhookName: string,
   callBackUrl: string,
   repositoryEvents: string[]
 ): Promise<void> {
-  const workspaces = await getWorkspacesAsync();
-  if (!workspaces || !workspaces.values || workspaces.values.length === 0) {
+  const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME!;
+  console.info(`SCM Secret Manager Name: ${scmSecretManagerName}`);
+  const scmData = await getScmData(scmSecretManagerName);
+  if (!scmData || !scmData.workspaces || scmData.workspaces.length === 0) {
     const errorMassage = 'No workspaces found or workspace values are empty';
     console.error(errorMassage);
     throw new Error(errorMassage);
   }
-  console.info(`Workspaces: ${workspaces.values}`);
-  for (const workspace of workspaces.values) {
-    console.info(`Workspace: ${workspace.uuid}`);
-    const repositories = await getRepositoriesAsync(workspace.uuid);
+  console.info(`Workspaces: ${scmData.workspaces}`);
+  for (const workspace of scmData.workspaces) {
+    console.info(`Workspace: ${workspace.name}`);
+    const repositories = await getRepositoriesAsync(workspace);
     if (repositories) {
       for (const repository of repositories.values) {
         console.info(`Repository: ${repository.uuid}`);
@@ -34,10 +36,10 @@ export async function registerRepositoryWebhooks(
             url: callBackUrl,
             active: true,
             events: repositoryEvents,
-            secret: '', // TODO: Add a secret here after preliminary testing
+            secret: scmData.callBackCode,
           };
           await createRepositoryWebhookAsync(
-            workspace.uuid,
+            workspace,
             repository.uuid,
             webhookRequest
           );
@@ -45,7 +47,7 @@ export async function registerRepositoryWebhooks(
       }
     } else {
       console.error(
-        `No repositories found under the workspace ${workspace.uuid}`
+        `No repositories found under the workspace ${workspace.name}`
       );
     }
   }

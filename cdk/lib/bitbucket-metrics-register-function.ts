@@ -10,6 +10,8 @@ import {Rule, Schedule} from 'aws-cdk-lib/aws-events';
 import {LambdaFunction} from 'aws-cdk-lib/aws-events-targets';
 import {Secret} from 'aws-cdk-lib/aws-secretsmanager';
 
+const SCM_SECRETS_MANAGER_NAME = 'BitbucketScmSecret';
+
 export interface CronFunctionProps extends ExtendedNodejsFunctionProps {
   readonly cronExpression: string;
 }
@@ -29,6 +31,9 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
       runtime: Runtime.NODEJS_20_X,
       architecture: Architecture.ARM_64,
       logRetention: RetentionDays.ONE_WEEK,
+      environment: {
+        SCM_SECRETS_MANAGER_NAME: SCM_SECRETS_MANAGER_NAME,
+      },
     });
 
     const rule = new Rule(this.stack, 'BitbucketMetricsRegisterRule', {
@@ -37,9 +42,8 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
 
     rule.addTarget(new LambdaFunction(this));
 
-    const scmSecretManagerName = 'BitbucketScmSecret';
-    new Secret(this.stack, scmSecretManagerName, {
-      secretName: scmSecretManagerName,
+    new Secret(this.stack, SCM_SECRETS_MANAGER_NAME, {
+      secretName: SCM_SECRETS_MANAGER_NAME,
       generateSecretString: {
         secretStringTemplate: JSON.stringify({
           workspaces: [{name: 'workspace1', token: 'token1'}],

@@ -1,50 +1,22 @@
 import axios from 'axios';
-import {getAuthToken} from './bitbucket-auth-helper';
+import {Workspace} from './bitbucket-auth-helper';
 import {
   RepositoriesResponse,
   WebhookRequest,
   WebhookResponse,
-  WorkspaceResponse,
 } from './bitbucket-services-model';
 
-export async function getWorkspacesAsync(): Promise<WorkspaceResponse | null> {
-  const accessToken = getAuthToken();
-  try {
-    const response = await axios.get(
-      'https://api.bitbucket.org/2.0/workspaces',
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: 'application/json',
-        },
-      }
-    );
-    console.info(
-      `Repository Response: ${response.status} ${response.statusText}`
-    );
-    const workspaceResponse = response.data as WorkspaceResponse;
-    console.info(workspaceResponse);
-    return workspaceResponse;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-export async function getRepositoriesAsync(
-  workspace: string
+async function getRepositories(
+  workspace: Workspace,
+  scmUrl: string
 ): Promise<RepositoriesResponse | null> {
-  const accessToken = getAuthToken();
   try {
-    const response = await axios.get(
-      `https://api.bitbucket.org/2.0/repositories/${workspace}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: 'application/json',
-        },
-      }
-    );
+    const response = await axios.get(scmUrl, {
+      headers: {
+        Authorization: `Bearer ${workspace.token}`,
+        Accept: 'application/json',
+      },
+    });
     console.info(
       `Repository Response: ${response.status} ${response.statusText}`
     );
@@ -57,19 +29,34 @@ export async function getRepositoriesAsync(
   }
 }
 
+export async function getRepositoriesAsync(
+  workspace: Workspace
+): Promise<RepositoriesResponse | null> {
+  const finalResponse = await getRepositories(
+    workspace,
+    `https://api.bitbucket.org/2.0/repositories/${workspace.name}`
+  );
+  let tempResponse = finalResponse;
+  while (tempResponse?.next) {
+    tempResponse = await getRepositories(workspace, tempResponse?.next);
+    if (tempResponse?.values) {
+      finalResponse?.values.push(...tempResponse.values);
+    }
+  }
+  return finalResponse;
+}
 export async function createRepositoryWebhookAsync(
-  workspace: string,
+  workspace: Workspace,
   repositoryUuid: string,
   webhookRequest: WebhookRequest
 ): Promise<WebhookResponse | null> {
-  const accessToken = getAuthToken();
   try {
     const response = await axios.post(
-      `https://api.bitbucket.org/2.0/repositories/${workspace}/${repositoryUuid}/hooks`,
+      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositoryUuid}/hooks`,
       webhookRequest,
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${workspace.token}`,
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },

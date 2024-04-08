@@ -9,7 +9,7 @@ interface CronEvent {
   time: string;
   region: string;
   resources: string[];
-  detail: any;
+  detail: string;
 }
 
 export async function handler(

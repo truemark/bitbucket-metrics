@@ -1,0 +1,10 @@
+{
+  "callBackCode": "ec8>*GCX_ner)A{LmPKNA(%,Q2`]&MAT",
+  "callBackUrl": "https://test.execute-api.us-east-1.amazonaws.com/bitbucket/metrics-publishers",
+  "workspaces": [
+    {
+      "name": "workspace1",
+      "token": "token1"
+    }
+  ]
+}
