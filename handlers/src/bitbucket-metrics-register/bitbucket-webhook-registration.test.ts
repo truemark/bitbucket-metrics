@@ -21,7 +21,6 @@ const mockedCreateRepositoryWebhookAsync =
 
 describe('registerRepositoryWebhooks', () => {
   const webhookName = 'PipelineEventsWebhook';
-  const callBackUrl = 'https://example.com/callback';
   const repositoryEvents = ['repo:push', 'issue:created', 'issue:updated'];
 
   beforeEach(() => {
@@ -40,11 +39,7 @@ describe('registerRepositoryWebhooks', () => {
     mockedGetScmData.mockResolvedValue(scmData);
     mockedGetRepositoriesAsync.mockResolvedValue(repositories);
 
-    await registerRepositoryWebhooks(
-      webhookName,
-      callBackUrl,
-      repositoryEvents
-    );
+    await registerRepositoryWebhooks(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
     expect(mockedGetRepositoriesAsync).toHaveBeenCalledTimes(
@@ -61,11 +56,7 @@ describe('registerRepositoryWebhooks', () => {
     mockedGetScmData.mockResolvedValue(scmData);
     mockedGetRepositoriesAsync.mockResolvedValue(null);
 
-    await registerRepositoryWebhooks(
-      webhookName,
-      callBackUrl,
-      repositoryEvents
-    );
+    await registerRepositoryWebhooks(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
     expect(mockedGetRepositoriesAsync).toHaveBeenCalledTimes(
@@ -78,7 +69,7 @@ describe('registerRepositoryWebhooks', () => {
     mockedGetScmData.mockResolvedValue(null);
 
     await expect(
-      registerRepositoryWebhooks(webhookName, callBackUrl, repositoryEvents)
+      registerRepositoryWebhooks(webhookName, repositoryEvents)
     ).rejects.toThrow('No workspaces found or workspace values are empty');
 
     expect(mockedGetScmData).toHaveBeenCalled();

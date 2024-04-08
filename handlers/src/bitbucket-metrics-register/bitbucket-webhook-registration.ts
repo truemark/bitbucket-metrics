@@ -8,7 +8,6 @@ import {getScmData} from './bitbucket-auth-helper';
 
 export async function registerRepositoryWebhooks(
   webhookName: string,
-  callBackUrl: string,
   repositoryEvents: string[]
 ): Promise<void> {
   const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME!;
@@ -19,6 +18,7 @@ export async function registerRepositoryWebhooks(
     console.error(errorMassage);
     throw new Error(errorMassage);
   }
+  const callBackUrl = scmData.callBackUrl;
   console.info(`Workspaces: ${scmData.workspaces}`);
   for (const workspace of scmData.workspaces) {
     console.info(`Workspace: ${workspace.name}`);
