@@ -9,7 +9,8 @@ import {RetentionDays} from 'aws-cdk-lib/aws-logs';
 import {Rule, Schedule} from 'aws-cdk-lib/aws-events';
 import {LambdaFunction} from 'aws-cdk-lib/aws-events-targets';
 import {Secret} from 'aws-cdk-lib/aws-secretsmanager';
-import {Duration} from "aws-cdk-lib";
+import {Duration} from 'aws-cdk-lib';
+import {PolicyStatement} from 'aws-cdk-lib/aws-iam';
 
 const SCM_SECRETS_MANAGER_NAME = 'BitbucketScmSecret';
 
@@ -38,6 +39,16 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
       },
     });
 
+    this.addToRolePolicy(
+      new PolicyStatement({
+        actions: [
+          'secretsmanager:GetSecretValue',
+          'secretsmanager:DescribeSecret',
+          'secretsmanager:ListSecrets',
+        ],
+        resources: ['*'],
+      })
+    );
     process.env.SCM_SECRET_MANAGER_NAME = SCM_SECRETS_MANAGER_NAME;
 
     const rule = new Rule(this.stack, 'BitbucketMetricsRegisterRule', {
