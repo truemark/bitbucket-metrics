@@ -2,6 +2,7 @@ import {
   APIGatewayProxyEventV2,
   APIGatewayProxyStructuredResultV2,
 } from 'aws-lambda';
+import {publishBitbucketMetrics} from './metrics-publisher-service';
 
 export async function handler(
   event: APIGatewayProxyEventV2
@@ -10,6 +11,9 @@ export async function handler(
     'Metrics Publisher Received event:',
     JSON.stringify(event.body, null, 2)
   );
+
+  publishBitbucketMetrics(JSON.parse(event.body!));
+
   return {
     statusCode: 200,
     body: JSON.stringify({
