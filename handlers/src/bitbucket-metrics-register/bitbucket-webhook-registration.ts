@@ -45,7 +45,7 @@ export async function registerRepositoryWebhooks(
           };
           await createRepositoryWebhookAsync(
             workspace,
-            repository.uuid,
+            repository.name,
             webhookRequest
           );
         }

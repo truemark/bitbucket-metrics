@@ -23,12 +23,8 @@ export async function handler(
   // Register webhooks for Bitbucket repositories
   await registerRepositoryWebhooks('BitbucketMetricsCallback', [
     'repo:push',
-    'peline:started',
-    'pipeline:fulfilled',
-    'pipeline:failed',
-    'pipeline:stopped',
-    'pipeline:fixed',
-    'pipeline:comment_created',
+    'repo:commit_status_created',
+    'repo:commit_status_updated',
   ]);
 
   return {
