@@ -48,12 +48,12 @@ export async function getRepositoriesAsync(
 }
 export async function createRepositoryWebhookAsync(
   workspace: Workspace,
-  repositoryUuid: string,
+  repositorySlug: string,
   webhookRequest: WebhookRequest
 ): Promise<WebhookResponse | null> {
   try {
     const response = await axios.post(
-      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositoryUuid}/hooks`,
+      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
       webhookRequest,
       {
         headers: {
@@ -75,11 +75,11 @@ export async function createRepositoryWebhookAsync(
 
 export async function getRepositoryWebhooksAsync(
   workspace: Workspace,
-  repositoryUuid: string
+  repositorySlug: string
 ): Promise<RepositoryWebhookResponse | null> {
   try {
     const response = await axios.get(
-      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositoryUuid}/hooks`,
+      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
       {
         headers: {
           Authorization: `Bearer ${workspace.token}`,

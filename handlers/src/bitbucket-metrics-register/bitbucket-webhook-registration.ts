@@ -6,6 +6,7 @@ import {
 } from './bitbucket-services-helper';
 import {WebhookRequest} from './bitbucket-services-model';
 import {getScmData, Workspace} from './bitbucket-auth-helper';
+import {createRepositorySlug} from '../metrics-utilities/metrics-utilities';
 
 async function canAddWebhookToRepository(
   workspace: Workspace,
@@ -49,10 +50,14 @@ export async function registerRepositoryWebhooks(
     const repositories = await getRepositoriesAsync(workspace);
     if (repositories) {
       for (const repository of repositories.values) {
-        console.info(`Repository: ${repository.uuid}`);
+        console.info(
+          `Repository UUID: ${repository.uuid} and Name: ${repository.name}`
+        );
+        const repositorySlug = createRepositorySlug(repository.name);
+        console.info(`Repository Slug: ${repositorySlug}`);
         const canAddWebhookToRepo = await canAddWebhookToRepository(
           workspace,
-          repository.name,
+          repositorySlug,
           webhookName
         );
         if (!canAddWebhookToRepo || !repository.name.includes('tau-test')) {
@@ -69,7 +74,7 @@ export async function registerRepositoryWebhooks(
           };
           await createRepositoryWebhookAsync(
             workspace,
-            repository.name,
+            repositorySlug,
             webhookRequest
           );
         }
