@@ -29,7 +29,7 @@ interface MainBranch {
   type: string;
 }
 
-interface Repository {
+export interface Repository {
   type: string;
   links: Links;
   uuid: string;
@@ -79,4 +79,26 @@ export interface WebhookResponse {
   events: string[];
   secret_set: boolean;
   secret: string;
+}
+
+export interface Webhook {
+  type: string;
+  uuid: string;
+  url: string;
+  description: string;
+  subject_type: string;
+  active: boolean;
+  created_at: string;
+  events: string[];
+  secret_set: boolean;
+  secret: string;
+}
+
+export interface RepositoryWebhookResponse {
+  size: number;
+  page: number;
+  pagelen: number;
+  next: string;
+  previous: string;
+  values: Webhook[];
 }

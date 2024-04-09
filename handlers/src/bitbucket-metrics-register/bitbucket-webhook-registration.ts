@@ -2,9 +2,31 @@
 import {
   createRepositoryWebhookAsync,
   getRepositoriesAsync,
+  getRepositoryWebhooksAsync,
 } from './bitbucket-services-helper';
 import {WebhookRequest} from './bitbucket-services-model';
-import {getScmData} from './bitbucket-auth-helper';
+import {getScmData, Workspace} from './bitbucket-auth-helper';
+
+async function canAddWebhookToRepository(
+  workspace: Workspace,
+  repositoryName: string,
+  webhookName: string
+): Promise<boolean> {
+  const webhooks = await getRepositoryWebhooksAsync(workspace, repositoryName);
+
+  if (!webhooks || !webhooks.values || webhooks.values.length === 0) {
+    return true;
+  }
+
+  let isEligible = true;
+  for (const webhook of webhooks.values) {
+    if (webhook.description === webhookName) {
+      console.info('Webhook already exists with the same name');
+      isEligible = false;
+    }
+  }
+  return isEligible;
+}
 
 export async function registerRepositoryWebhooks(
   webhookName: string,
@@ -28,10 +50,12 @@ export async function registerRepositoryWebhooks(
     if (repositories) {
       for (const repository of repositories.values) {
         console.info(`Repository: ${repository.uuid}`);
-        if (
-          repository!.links!.hooks!.name === webhookName ||
-          !repository.name.includes('tau-test')
-        ) {
+        const canAddWebhookToRepo = await canAddWebhookToRepository(
+          workspace,
+          repository.name,
+          webhookName
+        );
+        if (!canAddWebhookToRepo || !repository.name.includes('tau-test')) {
           console.info(
             `Webhook ${webhookName} already exists for repository ${repository.name} in workspace ${workspace.name}`
           );

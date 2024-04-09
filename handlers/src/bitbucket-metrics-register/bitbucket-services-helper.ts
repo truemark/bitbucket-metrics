@@ -2,6 +2,7 @@ import axios from 'axios';
 import {Workspace} from './bitbucket-auth-helper';
 import {
   RepositoriesResponse,
+  RepositoryWebhookResponse,
   WebhookRequest,
   WebhookResponse,
 } from './bitbucket-services-model';
@@ -64,6 +65,32 @@ export async function createRepositoryWebhookAsync(
     );
     console.info(`Webhook Response: ${response.status} ${response.statusText}`);
     const webhookResponse = response.data as WebhookResponse;
+    console.info(webhookResponse);
+    return webhookResponse;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getRepositoryWebhooksAsync(
+  workspace: Workspace,
+  repositoryUuid: string
+): Promise<RepositoryWebhookResponse | null> {
+  try {
+    const response = await axios.get(
+      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositoryUuid}/hooks`,
+      {
+        headers: {
+          Authorization: `Bearer ${workspace.token}`,
+          Accept: 'application/json',
+        },
+      }
+    );
+    console.info(
+      `Repository Webhook Response: ${response.status} ${response.statusText}`
+    );
+    const webhookResponse = response.data as RepositoryWebhookResponse;
     console.info(webhookResponse);
     return webhookResponse;
   } catch (err) {
