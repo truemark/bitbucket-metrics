@@ -27,28 +27,27 @@ export abstract class MetricPublisherBase {
     unitValue: number,
     timestamp: Date
   ): Promise<void> {
-    try {
-      console.debug('publishing metric');
+    console.debug('publishing metric');
 
-      const command = new PutMetricDataCommand({
-        MetricData: [
-          {
-            MetricName: metricName,
-            Dimensions: dimensions,
-            Unit: unitType,
-            Timestamp: timestamp,
-            Value: unitValue,
-          },
-        ],
-        Namespace: this.namespace,
-      });
-
-      await this.client.send(command);
-      console.info('Successfully published metric');
-    } catch (err) {
-      console.warn('Failed to publish metric ', err);
-      return;
-    }
+    const command = new PutMetricDataCommand({
+      MetricData: [
+        {
+          MetricName: metricName,
+          Dimensions: dimensions,
+          Unit: unitType,
+          Timestamp: timestamp,
+          Value: unitValue,
+        },
+      ],
+      Namespace: this.namespace,
+    });
+    console.info(`PutMetricDataCommand data: ${JSON.stringify(command)}`);
+    this.client
+      .send(command)
+      .then(() => console.log('Successfully published metric'))
+      .catch(err =>
+        console.warn('Failed to publish metric. Error: ', err.message)
+      );
   }
 
   private getOrDefaultConfig(): CloudWatchClientConfig {

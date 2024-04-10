@@ -19,7 +19,7 @@ function getMetricStructure(pipelineState: string): MetricStructure {
   } else if (pipelineState === 'SUCCESSFUL') {
     return {name: 'PipelineSuccess', unit: StandardUnit.Count};
   }
-  throw new Error('Invalid pipeline state');
+  return {name: 'NONE', unit: StandardUnit.None};
 }
 
 export async function publishBitbucketMetrics(
@@ -27,11 +27,15 @@ export async function publishBitbucketMetrics(
 ): Promise<void> {
   console.debug('Received event:', JSON.stringify(event, null, 2));
   if (!event.commit_status) {
-    console.info('Not ca pipeline event. Ignoring.');
+    console.info('Not a pipeline event. Ignoring.');
     return;
   }
   const pipelineState = event.commit_status.state;
   const metricStructure = getMetricStructure(pipelineState);
+  if (metricStructure.name === 'NONE') {
+    console.info('Unsupported pipeline state. Ignoring');
+    return;
+  }
   const repositoryName = event.repository.name;
   const workspaceName = event.repository.workspace.name;
   const pipelineName = event.commit_status.name;
@@ -40,7 +44,7 @@ export async function publishBitbucketMetrics(
   const metricsPublisher = new BitbucketMetricsPublisher(METRICS_NAMESPACE);
 
   if (metricStructure.unit === StandardUnit.Count) {
-    metricsPublisher.publish(
+    await metricsPublisher.publish(
       metricStructure.name,
       [
         {Name: DIMENSTION_NAME_PIPELINE_STATE, Value: pipelineState},

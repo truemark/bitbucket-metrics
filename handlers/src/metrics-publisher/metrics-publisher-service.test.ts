@@ -57,8 +57,7 @@ describe('publishBitbucketMetrics', () => {
     const event = readJsonToObject(
       '../../test/data/pipeline-inprogress-event-unescaped.json'
     );
-    await expect(publishBitbucketMetrics(event)).rejects.toThrow(
-      'Invalid pipeline state'
-    );
+    await publishBitbucketMetrics(event);
+    expect(mockPublish).not.toHaveBeenCalled();
   });
 });
