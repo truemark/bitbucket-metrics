@@ -1,6 +1,7 @@
 import {
   CloudWatchClient,
   CloudWatchClientConfig,
+  Dimension,
   PutMetricDataCommand,
   StandardUnit,
 } from '@aws-sdk/client-cloudwatch';
@@ -21,8 +22,7 @@ export abstract class MetricPublisherBase {
 
   public async publish(
     metricName: string,
-    dimensionName: string,
-    dimensionValue: string,
+    dimensions: Dimension[],
     unitType: StandardUnit,
     unitValue: number,
     timestamp: Date
@@ -34,12 +34,7 @@ export abstract class MetricPublisherBase {
         MetricData: [
           {
             MetricName: metricName,
-            Dimensions: [
-              {
-                Name: dimensionName,
-                Value: dimensionValue,
-              },
-            ],
+            Dimensions: dimensions,
             Unit: unitType,
             Timestamp: timestamp,
             Value: unitValue,
