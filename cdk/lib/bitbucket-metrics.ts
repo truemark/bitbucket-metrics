@@ -20,10 +20,6 @@ export class BitbucketMetrics extends Construct {
       apiGateway: httpApi,
     });
 
-    new BitbucketJwtReceiverFunction(this, 'JwtReceiver', {
-      apiGateway: httpApi,
-    });
-
     new BitbucketMetricsRegisterFunction(this, 'Register', {
       //cronExpression: 'cron(0 12 * * ? *)',
       cronExpression: 'cron(*/10 * * * ? *)',
