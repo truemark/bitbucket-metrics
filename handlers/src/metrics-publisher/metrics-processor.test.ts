@@ -1,11 +1,11 @@
-import {publishBitbucketMetrics} from './metrics-publisher-service';
+import {BitBucketMetricsProcessor} from './metrics-processor';
 import {BitbucketMetricsPublisher} from './bitbucket-metrics-publisher';
 import {StandardUnit} from '@aws-sdk/client-cloudwatch';
-import {readJsonToObject} from '../test-helpers/file-reader-test-helper';
+import {MetricsUtilities} from '../metrics-utilities/metrics-utilities';
 
 jest.mock('./bitbucket-metrics-publisher');
 
-describe('publishBitbucketMetrics', () => {
+describe('BitBucketMetricsProcessor.process', () => {
   let mockPublish: jest.Mock;
 
   beforeEach(() => {
@@ -18,18 +18,18 @@ describe('publishBitbucketMetrics', () => {
   });
 
   it('should ignore if event.commit_status is not present', async () => {
-    const event = readJsonToObject(
+    const event = MetricsUtilities.readJsonToObject(
       '../../test/data/repository-other-event-unescaped.json'
     );
-    await publishBitbucketMetrics(event);
+    await BitBucketMetricsProcessor.process(event);
     expect(mockPublish).not.toHaveBeenCalled();
   });
 
   it('should publish with "PipelineErrors" metric when pipelineState is "FAILED"', async () => {
-    const event = readJsonToObject(
+    const event = MetricsUtilities.readJsonToObject(
       '../../test/data/pipeline-failed-event-unescaped.json'
     );
-    await publishBitbucketMetrics(event);
+    await BitBucketMetricsProcessor.process(event);
     expect(mockPublish).toHaveBeenCalledWith(
       'PipelineErrors',
       expect.anything(),
@@ -40,10 +40,10 @@ describe('publishBitbucketMetrics', () => {
   });
 
   it('should publish with "PipelineSuccess" metric when pipelineState is "SUCCESSFUL"', async () => {
-    const event = readJsonToObject(
+    const event = MetricsUtilities.readJsonToObject(
       '../../test/data/pipeline-success-event-unescaped.json'
     );
-    await publishBitbucketMetrics(event);
+    await BitBucketMetricsProcessor.process(event);
     expect(mockPublish).toHaveBeenCalledWith(
       'PipelineSuccess',
       expect.anything(),
@@ -54,10 +54,10 @@ describe('publishBitbucketMetrics', () => {
   });
 
   it('should throw an error when the pipeline state is not supported', async () => {
-    const event = readJsonToObject(
+    const event = MetricsUtilities.readJsonToObject(
       '../../test/data/pipeline-inprogress-event-unescaped.json'
     );
-    await publishBitbucketMetrics(event);
+    await BitBucketMetricsProcessor.process(event);
     expect(mockPublish).not.toHaveBeenCalled();
   });
 });

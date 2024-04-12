@@ -1,5 +1,5 @@
 import {Context} from 'aws-lambda';
-import {registerRepositoryWebhooks} from './bitbucket-webhook-registration';
+import {BitbucketWebhookRegistrar} from './bitbucket-webhook-registrar';
 
 interface CronEvent {
   version: string;
@@ -21,7 +21,7 @@ export async function handler(
   console.info('Context:', JSON.stringify(context, null, 2));
 
   // Register webhooks for Bitbucket repositories
-  await registerRepositoryWebhooks('BitbucketMetricsCallback', [
+  await BitbucketWebhookRegistrar.register('BitbucketMetricsCallback', [
     'repo:push',
     'repo:commit_status_created',
     'repo:commit_status_updated',

@@ -1,8 +1,5 @@
 import axios from 'axios';
-import {
-  getRepositoriesAsync,
-  createRepositoryWebhookAsync,
-} from './bitbucket-services-helper';
+import {BitbucketServicesHelper} from './bitbucket-services-helper';
 import {WebhookRequest, WebhookResponse} from './bitbucket-services-model';
 
 jest.mock('axios');
@@ -13,7 +10,7 @@ describe('bitbucket-services-helper', () => {
     jest.clearAllMocks();
   });
 
-  describe('getRepositoriesAsync', () => {
+  describe('BitbucketServicesHelper.getRepositories', () => {
     it('should return all repositories across multiple pages', async () => {
       const workspace = {name: 'workspace1', token: 'token1'};
       const repositoriesResponse1 = {
@@ -26,7 +23,7 @@ describe('bitbucket-services-helper', () => {
         .mockResolvedValueOnce({data: repositoriesResponse1})
         .mockResolvedValueOnce({data: repositoriesResponse2});
 
-      const result = await getRepositoriesAsync(workspace);
+      const result = await BitbucketServicesHelper.getRepositories(workspace);
 
       expect(result).toEqual({
         next: 'next_url',
@@ -41,7 +38,7 @@ describe('bitbucket-services-helper', () => {
 
       mockedAxios.get.mockResolvedValueOnce({data: repositoriesResponse});
 
-      const result = await getRepositoriesAsync(workspace);
+      const result = await BitbucketServicesHelper.getRepositories(workspace);
 
       expect(result).toEqual(repositoriesResponse);
       expect(mockedAxios.get).toHaveBeenCalledTimes(1);
@@ -52,14 +49,14 @@ describe('bitbucket-services-helper', () => {
 
       mockedAxios.get.mockRejectedValueOnce(new Error('Network error'));
 
-      await expect(getRepositoriesAsync(workspace)).rejects.toThrow(
-        'Network error'
-      );
+      await expect(
+        BitbucketServicesHelper.getRepositories(workspace)
+      ).rejects.toThrow('Network error');
       expect(mockedAxios.get).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('createRepositoryWebhookAsync', () => {
+  describe('createRepositoryWebhook', () => {
     it('should return the webhook response when the axios call is successful', async () => {
       const workspace = {name: 'workspace1', token: 'token1'};
       const webhookResponse: WebhookResponse = {
@@ -89,7 +86,7 @@ describe('bitbucket-services-helper', () => {
         events: ['repo:push', 'issue:created', 'issue:updated'],
       };
 
-      const result = await createRepositoryWebhookAsync(
+      const result = await BitbucketServicesHelper.createRepositoryWebhook(
         workspace,
         'repo1',
         webhookRequest
@@ -112,7 +109,11 @@ describe('bitbucket-services-helper', () => {
       mockedAxios.post.mockRejectedValueOnce(new Error('Network error'));
 
       await expect(
-        createRepositoryWebhookAsync(workspace, 'repo1', webhookRequest)
+        BitbucketServicesHelper.createRepositoryWebhook(
+          workspace,
+          'repo1',
+          webhookRequest
+        )
       ).rejects.toThrow('Network error');
       expect(mockedAxios.post).toHaveBeenCalledTimes(1);
     });
