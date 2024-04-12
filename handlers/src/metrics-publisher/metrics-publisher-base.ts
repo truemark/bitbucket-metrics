@@ -42,7 +42,7 @@ export abstract class MetricPublisherBase {
       Namespace: this.namespace,
     });
     console.info(`PutMetricDataCommand data: ${JSON.stringify(command)}`);
-    this.client
+    await this.client
       .send(command)
       .then(() => console.log('Successfully published metric'))
       .catch(err =>

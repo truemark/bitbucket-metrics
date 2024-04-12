@@ -12,7 +12,7 @@ export async function handler(
     JSON.stringify(event.body, null, 2)
   );
 
-  publishBitbucketMetrics(JSON.parse(event.body!));
+  await publishBitbucketMetrics(JSON.parse(event.body!));
 
   return {
     statusCode: 200,
