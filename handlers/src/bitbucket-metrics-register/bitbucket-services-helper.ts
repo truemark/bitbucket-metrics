@@ -69,7 +69,37 @@ export class BitbucketServicesHelper {
         }
       );
       console.info(
-        `Webhook Response: ${response.status} ${response.statusText}`
+        `Webhook Creation Response: ${response.status} ${response.statusText}`
+      );
+      const webhookResponse = response.data as WebhookResponse;
+      console.info(webhookResponse);
+      return webhookResponse;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  public static async updateRepositoryWebhook(
+    workspace: Workspace,
+    repositorySlug: string,
+    webhookUuid: string,
+    webhookRequest: WebhookRequest
+  ): Promise<WebhookResponse | null> {
+    try {
+      const response = await axios.put(
+        `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks/${webhookUuid}`,
+        webhookRequest,
+        {
+          headers: {
+            Authorization: `Bearer ${workspace.token}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        }
+      );
+      console.info(
+        `Webhook Update Response: ${response.status} ${response.statusText}`
       );
       const webhookResponse = response.data as WebhookResponse;
       console.info(webhookResponse);
