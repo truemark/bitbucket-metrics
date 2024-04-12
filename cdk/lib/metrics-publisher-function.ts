@@ -41,7 +41,7 @@ export class MetricsPublisherFunction extends ExtendedNodejsFunction {
 
     const integration = new HttpLambdaIntegration('Integration', this);
     props.apiGateway.addRoutes({
-      path: '/bitbucket/metrics-publishers',
+      path: '/v1/bitbucket/metrics-publishers',
       methods: [HttpMethod.POST],
       integration,
     });
