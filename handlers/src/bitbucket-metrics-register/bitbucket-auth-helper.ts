@@ -15,6 +15,7 @@ export interface ScmData {
   readonly callBackCode: string;
   readonly callBackUrl: string;
   readonly workspaces: Workspace[];
+  readonly repositories: string[];
 }
 export class BitbucketAuthHelper {
   public static async getScmData(secretName: string): Promise<ScmData | null> {

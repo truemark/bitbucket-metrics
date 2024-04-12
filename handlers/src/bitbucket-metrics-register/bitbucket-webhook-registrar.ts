@@ -8,9 +8,40 @@ enum WebhookAction {
   CREATE = 'Create',
   UPDATE = 'Update',
   NONE = 'None',
+  NOT_ALLOWED = 'Not Allowed',
 }
+
+const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME
+  ? process.env.SCM_SECRET_MANAGER_NAME
+  : 'BitbucketScmSecret';
+
 export class BitbucketWebhookRegistrar {
-  private static async getWebhook(
+  scmData: ScmData | null = null;
+  allowListedRepositories: string[] = [];
+
+  private constructor() {}
+
+  private async initialize(): Promise<void> {
+    this.scmData = await BitbucketAuthHelper.getScmData(scmSecretManagerName);
+    if (this.scmData?.repositories) {
+      this.allowListedRepositories = this.scmData.repositories.map(item =>
+        item.toLowerCase()
+      );
+    }
+    if (this.allowListedRepositories.length === 0) {
+      throw new Error(
+        'No repositories are allowed to register webhooks. Please update the SCM secret.'
+      );
+    }
+  }
+
+  public static async create(): Promise<BitbucketWebhookRegistrar> {
+    const registrar = new BitbucketWebhookRegistrar();
+    await registrar.initialize();
+    return registrar;
+  }
+
+  private async getWebhook(
     workspace: Workspace,
     repositoryName: string,
     webhookName: string
@@ -32,30 +63,36 @@ export class BitbucketWebhookRegistrar {
     return undefined;
   }
 
-  private static async determineWebhookAction(
+  private async determineWebhookAction(
     webhook: Webhook | undefined,
     webhookName: string,
-    webhookUrl: string
+    repositorySlug: string
   ): Promise<WebhookAction> {
+    const isRepositoryAllowListed =
+      this.allowListedRepositories.length > 0 &&
+      (this.allowListedRepositories.includes('all') ||
+        this.allowListedRepositories.includes(repositorySlug));
+    if (!isRepositoryAllowListed) {
+      return WebhookAction.NOT_ALLOWED;
+    }
     if (!webhook) {
       return WebhookAction.CREATE;
     }
     console.info('Webhook already exists with the same name');
-    if (webhook.description === webhookName && webhook.url === webhookUrl) {
+    if (
+      webhook.description === webhookName &&
+      webhook.url === this.scmData!.callBackUrl
+    ) {
       console.info('Webhook already exists with the same name and URL');
       return WebhookAction.NONE;
     } else {
-      console.info(
-        'Webhook already exists with the same name but different URL'
-      );
       return WebhookAction.UPDATE;
     }
   }
 
-  private static async addWebhookToRepository(
+  private async addWebhookToRepository(
     webhookName: string,
     repositoryEvents: string[],
-    scmData: ScmData,
     workspace: Workspace,
     repository: Repository
   ): Promise<void> {
@@ -73,71 +110,71 @@ export class BitbucketWebhookRegistrar {
     const webhookAction = await this.determineWebhookAction(
       webhook,
       webhookName,
-      scmData.callBackUrl
+      repositorySlug
     );
-    if (!repository.name.includes('tau-test')) {
-      console.info(
-        `Repository ${repository.name} in workspace ${workspace.name} not allowed to register webhooks.`
-      );
-    } else {
-      switch (webhookAction) {
-        case WebhookAction.CREATE:
-          await BitbucketServicesHelper.createRepositoryWebhook(
-            workspace,
-            repositorySlug,
-            {
-              description: webhookName,
-              url: scmData.callBackUrl,
-              active: true,
-              events: repositoryEvents,
-              secret: scmData.callBackCode,
-            }
-          );
-          break;
-        case WebhookAction.UPDATE:
-          await BitbucketServicesHelper.updateRepositoryWebhook(
-            workspace,
-            repositorySlug,
-            webhook!.uuid!,
-            {
-              description: webhookName,
-              url: scmData.callBackUrl,
-              active: true,
-              events: repositoryEvents,
-              secret: scmData.callBackCode,
-            }
-          );
-          break;
-        case WebhookAction.NONE:
-          console.info(
-            `Webhook ${webhookName} already exists for repository ${repository.name} in workspace ${workspace.name}`
-          );
-          break;
-        default:
-          console.log('Invalid webhook action');
-          break;
-      }
+
+    switch (webhookAction) {
+      case WebhookAction.CREATE:
+        await BitbucketServicesHelper.createRepositoryWebhook(
+          workspace,
+          repositorySlug,
+          {
+            description: webhookName,
+            url: this.scmData!.callBackUrl,
+            active: true,
+            events: repositoryEvents,
+            secret: this.scmData!.callBackCode,
+          }
+        );
+        break;
+      case WebhookAction.UPDATE:
+        await BitbucketServicesHelper.updateRepositoryWebhook(
+          workspace,
+          repositorySlug,
+          webhook!.uuid!,
+          {
+            description: webhookName,
+            url: this.scmData!.callBackUrl,
+            active: true,
+            events: repositoryEvents,
+            secret: this.scmData!.callBackCode,
+          }
+        );
+        break;
+      case WebhookAction.NOT_ALLOWED:
+        console.info(
+          `Repository ${repository.name} in workspace ${workspace.name} not allowed to register webhooks.`
+        );
+        break;
+      case WebhookAction.NONE:
+        console.info(
+          `Webhook ${webhookName} already exists for repository ${repository.name} in workspace ${workspace.name}`
+        );
+        break;
+      default:
+        console.log('Invalid webhook action');
+        break;
     }
   }
 
-  public static async register(
+  public async register(
     webhookName: string,
     repositoryEvents: string[]
   ): Promise<void> {
-    const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME
-      ? process.env.SCM_SECRET_MANAGER_NAME
-      : 'BitbucketScmSecret';
     console.info(`SCM Secret Manager Name: ${scmSecretManagerName}`);
 
-    const scmData = await BitbucketAuthHelper.getScmData(scmSecretManagerName);
-    if (!scmData || !scmData.workspaces || scmData.workspaces.length === 0) {
+    if (
+      !this.scmData ||
+      !this.scmData.workspaces ||
+      this.scmData.workspaces.length === 0
+    ) {
       const errorMassage = 'No workspaces found or workspace values are empty';
       console.error(errorMassage);
       throw new Error(errorMassage);
     }
 
-    console.info(`Workspaces: ${scmData.workspaces.length}`);
-    for (const workspace of scmData.workspaces) {
+    console.info(`Workspaces: ${this.scmData.workspaces.length}`);
+    for (const workspace of this.scmData.workspaces) {
       console.info(`Workspace: ${workspace.name}`);
       const repositories =
         await BitbucketServicesHelper.getRepositories(workspace);
@@ -150,7 +187,6 @@ export class BitbucketWebhookRegistrar {
           await this.addWebhookToRepository(
             webhookName,
             repositoryEvents,
-            scmData,
             workspace,
             repository
           );

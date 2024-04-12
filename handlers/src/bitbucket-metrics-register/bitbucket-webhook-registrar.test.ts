@@ -10,16 +10,16 @@ const mockedGetScmData = BitbucketAuthHelper.getScmData as jest.MockedFunction<
   typeof BitbucketAuthHelper.getScmData
 >;
 
-const mockedGetRepositoriesAsync =
+const mockedGetRepositories =
   BitbucketServicesHelper.getRepositories as jest.MockedFunction<
     typeof BitbucketServicesHelper.getRepositories
   >;
-const mockedCreateRepositoryWebhookAsync =
+const mockedCreateRepositoryWebhook =
   BitbucketServicesHelper.createRepositoryWebhook as jest.MockedFunction<
     typeof BitbucketServicesHelper.createRepositoryWebhook
   >;
 
-describe.skip('BitbucketWebhookRegistrar.register', () => {
+describe('BitbucketWebhookRegistrar.register', () => {
   const webhookName = 'PipelineEventsWebhook';
   const repositoryEvents = ['repo:push', 'issue:created', 'issue:updated'];
 
@@ -41,15 +41,16 @@ describe.skip('BitbucketWebhookRegistrar.register', () => {
     );
 
     mockedGetScmData.mockResolvedValue(scmData);
-    mockedGetRepositoriesAsync.mockResolvedValue(repositories);
+    mockedGetRepositories.mockResolvedValue(repositories);
 
-    await BitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
+    const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
+    await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositoriesAsync).toHaveBeenCalledTimes(
+    expect(mockedGetRepositories).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
-    expect(mockedCreateRepositoryWebhookAsync).toHaveBeenCalledTimes(
+    expect(mockedCreateRepositoryWebhook).toHaveBeenCalledTimes(
       scmData.workspaces.length * repositories.values.length
     );
   });
@@ -60,26 +61,41 @@ describe.skip('BitbucketWebhookRegistrar.register', () => {
     );
 
     mockedGetScmData.mockResolvedValue(scmData);
-    mockedGetRepositoriesAsync.mockResolvedValue(null);
+    mockedGetRepositories.mockResolvedValue(null);
 
-    await BitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
+    const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
+    await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositoriesAsync).toHaveBeenCalledTimes(
+    expect(mockedGetRepositories).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
-    expect(mockedCreateRepositoryWebhookAsync).not.toHaveBeenCalled();
+    expect(mockedCreateRepositoryWebhook).not.toHaveBeenCalled();
   });
 
-  test('should throw an error if there are no workspaces', async () => {
-    mockedGetScmData.mockResolvedValue(null);
+  test('should throw an error if there are no allow listed repositories in SCM Secrets', async () => {
+    const scmData = MetricsUtilities.readJsonToObject(
+      '../../test/data/scm-data0.json'
+    );
+    mockedGetScmData.mockResolvedValue(scmData);
 
-    await expect(
-      BitbucketWebhookRegistrar.register(webhookName, repositoryEvents)
-    ).rejects.toThrow('No workspaces found or workspace values are empty');
+    await expect(BitbucketWebhookRegistrar.create()).rejects.toThrow(
+      'No repositories are allowed to register webhooks. Please update the SCM secret.'
+    );
+  });
 
-    expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositoriesAsync).not.toHaveBeenCalled();
-    expect(mockedCreateRepositoryWebhookAsync).not.toHaveBeenCalled();
+  test('should throw an error if allowed repositories are empty in SCM Data', async () => {
+    const scmData = {
+      repositories: [],
+      workspaces: [],
+      callBackCode: 'test-code',
+      callBackUrl: 'test-url',
+    };
+
+    mockedGetScmData.mockResolvedValue(scmData);
+
+    await expect(BitbucketWebhookRegistrar.create()).rejects.toThrow(
+      'No repositories are allowed to register webhooks. Please update the SCM secret.'
+    );
   });
 });

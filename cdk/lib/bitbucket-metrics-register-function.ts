@@ -63,6 +63,9 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
         secretStringTemplate: JSON.stringify({
           workspaces: [{name: 'workspace1', token: 'token1'}],
           callBackUrl: 'https://test.io',
+          repositories: [
+            'change to ALL to allow all repositories or add specific repository names',
+          ],
         }),
         generateStringKey: 'callBackCode', // Needed when callback is called from Bitbucket Cloud
       },
