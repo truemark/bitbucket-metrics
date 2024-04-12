@@ -1,0 +1,23 @@
+{
+  "size": 142,
+  "page": 102,
+  "pagelen": 159,
+  "next": "<string>",
+  "previous": "<string>",
+  "values": [
+    {
+      "type": "<string>",
+      "uuid": "<string>",
+      "url": "<string>",
+      "description": "PipelineEventsWebhook",
+      "subject_type": "repository",
+      "active": true,
+      "created_at": "<string>",
+      "events": [
+        "pullrequest:changes_request_removed"
+      ],
+      "secret_set": true,
+      "secret": "<string>"
+    }
+  ]
+}

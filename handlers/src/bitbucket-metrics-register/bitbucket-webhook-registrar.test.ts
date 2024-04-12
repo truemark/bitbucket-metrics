@@ -14,9 +14,20 @@ const mockedGetRepositories =
   BitbucketServicesHelper.getRepositories as jest.MockedFunction<
     typeof BitbucketServicesHelper.getRepositories
   >;
+
+const mockedGetRepositoryWebhook =
+  BitbucketServicesHelper.getRepositoryWebhooks as jest.MockedFunction<
+    typeof BitbucketServicesHelper.getRepositoryWebhooks
+  >;
+
 const mockedCreateRepositoryWebhook =
   BitbucketServicesHelper.createRepositoryWebhook as jest.MockedFunction<
     typeof BitbucketServicesHelper.createRepositoryWebhook
+  >;
+
+const mockedUpdateRepositoryWebhook =
+  BitbucketServicesHelper.updateRepositoryWebhook as jest.MockedFunction<
+    typeof BitbucketServicesHelper.updateRepositoryWebhook
   >;
 
 describe('BitbucketWebhookRegistrar.register', () => {
@@ -50,6 +61,9 @@ describe('BitbucketWebhookRegistrar.register', () => {
     expect(mockedGetRepositories).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
+    expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(
+      scmData.workspaces.length * repositories.values.length
+    );
     expect(mockedCreateRepositoryWebhook).toHaveBeenCalledTimes(
       scmData.workspaces.length * repositories.values.length
     );
@@ -71,6 +85,92 @@ describe('BitbucketWebhookRegistrar.register', () => {
       scmData.workspaces.length
     );
     expect(mockedCreateRepositoryWebhook).not.toHaveBeenCalled();
+  });
+
+  test('should update existing webhook if an existing webhook has a different url', async () => {
+    const scmData = MetricsUtilities.readJsonToObject(
+      '../../test/data/scm-data1.json'
+    );
+    const repositories = MetricsUtilities.readJsonToObject(
+      '../../test/data/repositories.json'
+    );
+
+    const webhooks = MetricsUtilities.readJsonToObject(
+      '../../test/data/repository-webhook-response-different-url1.json'
+    );
+
+    mockedGetScmData.mockResolvedValue(scmData);
+    mockedGetRepositories.mockResolvedValue(repositories);
+    mockedGetRepositoryWebhook.mockResolvedValue(webhooks);
+
+    const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
+    await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
+
+    expect(mockedGetScmData).toHaveBeenCalled();
+    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+      scmData.workspaces.length
+    );
+    expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);
+    expect(mockedUpdateRepositoryWebhook).toHaveBeenCalledTimes(2);
+    expect(mockedCreateRepositoryWebhook).toHaveBeenCalledTimes(0);
+  });
+
+  test('should not update existing webhook if an existing webhook has same url as the request', async () => {
+    const scmData = MetricsUtilities.readJsonToObject(
+      '../../test/data/scm-data1.json'
+    );
+    const repositories = MetricsUtilities.readJsonToObject(
+      '../../test/data/repositories.json'
+    );
+
+    const webhooks = MetricsUtilities.readJsonToObject(
+      '../../test/data/repository-webhook-response-same-url1.json'
+    );
+
+    mockedGetScmData.mockResolvedValue(scmData);
+    mockedGetRepositories.mockResolvedValue(repositories);
+    mockedGetRepositoryWebhook.mockResolvedValue(webhooks);
+
+    const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
+    await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
+
+    expect(mockedGetScmData).toHaveBeenCalled();
+    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+      scmData.workspaces.length
+    );
+    expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);
+    expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);
+    expect(mockedUpdateRepositoryWebhook).toHaveBeenCalledTimes(0);
+    expect(mockedCreateRepositoryWebhook).toHaveBeenCalledTimes(0);
+  });
+
+  test('should do nothing if repositories found are not in the list', async () => {
+    const scmData = MetricsUtilities.readJsonToObject(
+      '../../test/data/scm-data-not-allowed1.json'
+    );
+    const repositories = MetricsUtilities.readJsonToObject(
+      '../../test/data/repositories.json'
+    );
+
+    const webhooks = MetricsUtilities.readJsonToObject(
+      '../../test/data/repository-webhook-response-same-url1.json'
+    );
+
+    mockedGetScmData.mockResolvedValue(scmData);
+    mockedGetRepositories.mockResolvedValue(repositories);
+    mockedGetRepositoryWebhook.mockResolvedValue(webhooks);
+
+    const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
+    await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
+
+    expect(mockedGetScmData).toHaveBeenCalled();
+    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+      scmData.workspaces.length
+    );
+    expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);
+    expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);
+    expect(mockedUpdateRepositoryWebhook).toHaveBeenCalledTimes(0);
+    expect(mockedCreateRepositoryWebhook).toHaveBeenCalledTimes(0);
   });
 
   test('should throw an error if there are no allow listed repositories in SCM Secrets', async () => {
