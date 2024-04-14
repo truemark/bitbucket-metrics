@@ -1,6 +1,10 @@
 // Purpose: Register webhooks for all repositories in all workspaces.
 import {BitbucketServicesHelper} from './bitbucket-services-helper';
-import {Repository, Webhook} from './bitbucket-services-model';
+import {
+  RepositoriesResponse,
+  Repository,
+  Webhook,
+} from './bitbucket-services-model';
 import {BitbucketAuthHelper, ScmData, Workspace} from './bitbucket-auth-helper';
 import {MetricsUtilities} from '../metrics-utilities/metrics-utilities';
 
@@ -157,6 +161,37 @@ export class BitbucketWebhookRegistrar {
     }
   }
 
+  private async registerRepositories(
+    webhookName: string,
+    repositoryEvents: string[],
+    workspace: Workspace,
+    nextScmUrl: string | undefined
+  ): Promise<RepositoriesResponse | null> {
+    const repositoryResponse: RepositoriesResponse | null =
+      await BitbucketServicesHelper.getRepositoriesPaginated(
+        workspace,
+        nextScmUrl
+      );
+    if (repositoryResponse) {
+      for (const repository of repositoryResponse.values) {
+        console.info(
+          `Repository UUID: ${repository.uuid} and Name: ${repository.name}`
+        );
+        await this.addWebhookToRepository(
+          webhookName,
+          repositoryEvents,
+          workspace,
+          repository
+        );
+      }
+    } else {
+      console.error(
+        `No repositories found under the workspace ${workspace.name}`
+      );
+    }
+    return repositoryResponse;
+  }
+
   public async register(
     webhookName: string,
     repositoryEvents: string[]
@@ -176,26 +211,26 @@ export class BitbucketWebhookRegistrar {
     console.info(`Workspaces: ${this.scmData.workspaces.length}`);
     for (const workspace of this.scmData.workspaces) {
       console.info(`Workspace: ${workspace.name}`);
-      const repositories =
-        await BitbucketServicesHelper.getRepositories(workspace);
-
-      if (repositories) {
-        for (const repository of repositories.values) {
-          console.info(
-            `Repository UUID: ${repository.uuid} and Name: ${repository.name}`
-          );
-          await this.addWebhookToRepository(
-            webhookName,
-            repositoryEvents,
-            workspace,
-            repository
-          );
+      let repositoryResponse: RepositoriesResponse | null = null;
+      let count = 0;
+      do {
+        let nextScmUrl: string | undefined;
+        if (!repositoryResponse) {
+          nextScmUrl = undefined;
+        } else {
+          nextScmUrl = repositoryResponse?.next;
         }
-      } else {
-        console.error(
-          `No repositories found under the workspace ${workspace.name}`
+        repositoryResponse = await this.registerRepositories(
+          webhookName,
+          repositoryEvents,
+          workspace,
+          nextScmUrl
         );
-      }
+        count++;
+        console.info(
+          `Received ${repositoryResponse?.pagelen} repositories on page ${count}`
+        );
+      } while (repositoryResponse?.next);
     }
   }
 }

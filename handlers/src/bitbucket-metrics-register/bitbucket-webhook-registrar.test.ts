@@ -10,9 +10,9 @@ const mockedGetScmData = BitbucketAuthHelper.getScmData as jest.MockedFunction<
   typeof BitbucketAuthHelper.getScmData
 >;
 
-const mockedGetRepositories =
-  BitbucketServicesHelper.getRepositories as jest.MockedFunction<
-    typeof BitbucketServicesHelper.getRepositories
+const mockedGetRepositoriesPaginated =
+  BitbucketServicesHelper.getRepositoriesPaginated as jest.MockedFunction<
+    typeof BitbucketServicesHelper.getRepositoriesPaginated
   >;
 
 const mockedGetRepositoryWebhook =
@@ -48,17 +48,17 @@ describe('BitbucketWebhookRegistrar.register', () => {
       '../../test/data/scm-data2.json'
     );
     const repositories = MetricsUtilities.readJsonToObject(
-      '../../test/data/repositories.json'
+      '../../test/data/repositories-no-next.json'
     );
 
     mockedGetScmData.mockResolvedValue(scmData);
-    mockedGetRepositories.mockResolvedValue(repositories);
+    mockedGetRepositoriesPaginated.mockResolvedValue(repositories);
 
     const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
     await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+    expect(mockedGetRepositoriesPaginated).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
     expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(
@@ -75,13 +75,13 @@ describe('BitbucketWebhookRegistrar.register', () => {
     );
 
     mockedGetScmData.mockResolvedValue(scmData);
-    mockedGetRepositories.mockResolvedValue(null);
+    mockedGetRepositoriesPaginated.mockResolvedValue(null);
 
     const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
     await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+    expect(mockedGetRepositoriesPaginated).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
     expect(mockedCreateRepositoryWebhook).not.toHaveBeenCalled();
@@ -92,7 +92,7 @@ describe('BitbucketWebhookRegistrar.register', () => {
       '../../test/data/scm-data1.json'
     );
     const repositories = MetricsUtilities.readJsonToObject(
-      '../../test/data/repositories.json'
+      '../../test/data/repositories-no-next.json'
     );
 
     const webhooks = MetricsUtilities.readJsonToObject(
@@ -100,14 +100,14 @@ describe('BitbucketWebhookRegistrar.register', () => {
     );
 
     mockedGetScmData.mockResolvedValue(scmData);
-    mockedGetRepositories.mockResolvedValue(repositories);
+    mockedGetRepositoriesPaginated.mockResolvedValue(repositories);
     mockedGetRepositoryWebhook.mockResolvedValue(webhooks);
 
     const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
     await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+    expect(mockedGetRepositoriesPaginated).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
     expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);
@@ -120,7 +120,7 @@ describe('BitbucketWebhookRegistrar.register', () => {
       '../../test/data/scm-data1.json'
     );
     const repositories = MetricsUtilities.readJsonToObject(
-      '../../test/data/repositories.json'
+      '../../test/data/repositories-no-next.json'
     );
 
     const webhooks = MetricsUtilities.readJsonToObject(
@@ -128,14 +128,14 @@ describe('BitbucketWebhookRegistrar.register', () => {
     );
 
     mockedGetScmData.mockResolvedValue(scmData);
-    mockedGetRepositories.mockResolvedValue(repositories);
+    mockedGetRepositoriesPaginated.mockResolvedValue(repositories);
     mockedGetRepositoryWebhook.mockResolvedValue(webhooks);
 
     const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
     await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+    expect(mockedGetRepositoriesPaginated).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
     expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);
@@ -149,7 +149,7 @@ describe('BitbucketWebhookRegistrar.register', () => {
       '../../test/data/scm-data-not-allowed1.json'
     );
     const repositories = MetricsUtilities.readJsonToObject(
-      '../../test/data/repositories.json'
+      '../../test/data/repositories-no-next.json'
     );
 
     const webhooks = MetricsUtilities.readJsonToObject(
@@ -157,14 +157,14 @@ describe('BitbucketWebhookRegistrar.register', () => {
     );
 
     mockedGetScmData.mockResolvedValue(scmData);
-    mockedGetRepositories.mockResolvedValue(repositories);
+    mockedGetRepositoriesPaginated.mockResolvedValue(repositories);
     mockedGetRepositoryWebhook.mockResolvedValue(webhooks);
 
     const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
     await bitbucketWebhookRegistrar.register(webhookName, repositoryEvents);
 
     expect(mockedGetScmData).toHaveBeenCalled();
-    expect(mockedGetRepositories).toHaveBeenCalledTimes(
+    expect(mockedGetRepositoriesPaginated).toHaveBeenCalledTimes(
       scmData.workspaces.length
     );
     expect(mockedGetRepositoryWebhook).toHaveBeenCalledTimes(2);

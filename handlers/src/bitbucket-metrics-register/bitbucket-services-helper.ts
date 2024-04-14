@@ -8,12 +8,14 @@ import {
 } from './bitbucket-services-model';
 
 export class BitbucketServicesHelper {
-  private static async getRepositoriesPaginated(
+  public static async getRepositoriesPaginated(
     workspace: Workspace,
-    scmUrl: string
+    scmUrl?: string
   ): Promise<RepositoriesResponse | null> {
+    const newScmUrl =
+      scmUrl ?? `https://api.bitbucket.org/2.0/repositories/${workspace.name}`;
     try {
-      const response = await axios.get(scmUrl, {
+      const response = await axios.get(newScmUrl, {
         headers: {
           Authorization: `Bearer ${workspace.token}`,
           Accept: 'application/json',
@@ -34,20 +36,24 @@ export class BitbucketServicesHelper {
   public static async getRepositories(
     workspace: Workspace
   ): Promise<RepositoriesResponse | null> {
-    const finalResponse = await this.getRepositoriesPaginated(
-      workspace,
-      `https://api.bitbucket.org/2.0/repositories/${workspace.name}`
-    );
-    let tempResponse = finalResponse;
-    while (tempResponse?.next) {
-      tempResponse = await this.getRepositoriesPaginated(
-        workspace,
-        tempResponse?.next
-      );
-      if (tempResponse?.values) {
-        finalResponse?.values.push(...tempResponse.values);
+    let tempResponse: RepositoriesResponse | null = null;
+    let finalResponse: RepositoriesResponse | null = null;
+
+    do {
+      let nextScmUrl: string | undefined;
+      if (!tempResponse) {
+        nextScmUrl = undefined;
+      } else {
+        nextScmUrl = tempResponse?.next;
       }
-    }
+      tempResponse = await this.getRepositoriesPaginated(workspace, nextScmUrl);
+      if (!finalResponse) {
+        finalResponse = tempResponse;
+      } else if (tempResponse?.values) {
+        finalResponse.values.push(...tempResponse.values);
+      }
+    } while (tempResponse?.next);
+
     return finalResponse;
   }
 
