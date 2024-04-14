@@ -1,5 +1,6 @@
 import {Context} from 'aws-lambda';
 import {BitbucketWebhookRegistrar} from './bitbucket-webhook-registrar';
+import {logger} from '../logging-utils/logger';
 
 interface CronEvent {
   version: string;
@@ -17,8 +18,8 @@ export async function handler(
   event: CronEvent,
   context: Context
 ): Promise<{statusCode: number; body: string}> {
-  console.info('Received event:', JSON.stringify(event, null, 2));
-  console.info('Context:', JSON.stringify(context, null, 2));
+  logger.debug(`Received event: ${JSON.stringify(event, null, 2)}`);
+  logger.debug(`Context: ${JSON.stringify(context, null, 2)}`);
 
   // Register webhooks for Bitbucket repositories
   const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();

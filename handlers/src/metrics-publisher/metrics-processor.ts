@@ -1,6 +1,7 @@
 import {BitbucketMetricsPublisher} from './bitbucket-metrics-publisher';
 import {StandardUnit} from '@aws-sdk/client-cloudwatch';
 import {BitbucketEvent} from './bitbucket-events-model';
+import {logger} from '../logging-utils/logger';
 
 const METRICS_NAMESPACE = 'TrueMark/Bitbucket';
 const DIMENSTION_NAME_PIPELINE_STATE = 'Pipeline.State';
@@ -25,15 +26,15 @@ export class BitBucketMetricsProcessor {
   }
 
   public static async process(event: BitbucketEvent): Promise<void> {
-    console.debug('Received event:', JSON.stringify(event, null, 2));
+    logger.debug('Received event:', JSON.stringify(event, null, 2));
     if (!event.commit_status) {
-      console.info('Not a pipeline event. Ignoring.');
+      logger.info('Not a pipeline event. Ignoring.');
       return;
     }
     const pipelineState = event.commit_status.state;
     const metricStructure = this.getMetricStructure(pipelineState);
     if (metricStructure.name === 'NONE') {
-      console.info('Unsupported pipeline state. Ignoring');
+      logger.info('Unsupported pipeline state. Ignoring');
       return;
     }
     const repositoryName = event.repository.name;
@@ -62,7 +63,7 @@ export class BitBucketMetricsProcessor {
         pipelineTime
       );
     } else {
-      console.error(`Invalid metric unit ${metricStructure.unit}`);
+      logger.error(`Invalid metric unit ${metricStructure.unit}`);
     }
   }
 }

@@ -2,6 +2,7 @@ import {
   GetSecretValueCommand,
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
+import {logger} from '../logging-utils/logger';
 
 const AWS_REGION = process.env.AWS_REGION;
 const secretsManagerClient = new SecretsManagerClient({region: AWS_REGION});
@@ -26,7 +27,7 @@ export class BitbucketAuthHelper {
       const response = await secretsManagerClient.send(command);
       return JSON.parse(response!.SecretString!);
     } catch (error) {
-      console.error('Error fetching Scm Data from secret. Exiting. ', error);
+      logger.error('Error fetching Scm Data from secret. Exiting. ', error);
       throw error;
     }
   }

@@ -6,6 +6,7 @@ import {
   WebhookRequest,
   WebhookResponse,
 } from './bitbucket-services-model';
+import {logger} from '../logging-utils/logger';
 
 export class BitbucketServicesHelper {
   public static async getRepositoriesPaginated(
@@ -21,14 +22,14 @@ export class BitbucketServicesHelper {
           Accept: 'application/json',
         },
       });
-      console.info(
+      logger.debug(
         `Repository Response: ${response.status} ${response.statusText}`
       );
       const repositoriesResponse = response.data as RepositoriesResponse;
-      console.info(repositoriesResponse);
+      logger.debug(repositoriesResponse);
       return repositoriesResponse;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       throw err;
     }
   }
@@ -74,14 +75,14 @@ export class BitbucketServicesHelper {
           },
         }
       );
-      console.info(
+      logger.debug(
         `Webhook Creation Response: ${response.status} ${response.statusText}`
       );
       const webhookResponse = response.data as WebhookResponse;
-      console.info(webhookResponse);
+      logger.debug(webhookResponse);
       return webhookResponse;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       throw err;
     }
   }
@@ -104,14 +105,14 @@ export class BitbucketServicesHelper {
           },
         }
       );
-      console.info(
+      logger.debug(
         `Webhook Update Response: ${response.status} ${response.statusText}`
       );
       const webhookResponse = response.data as WebhookResponse;
-      console.info(webhookResponse);
+      logger.debug(webhookResponse);
       return webhookResponse;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       throw err;
     }
   }
@@ -130,14 +131,14 @@ export class BitbucketServicesHelper {
           },
         }
       );
-      console.info(
+      logger.debug(
         `Repository Webhook Response: ${response.status} ${response.statusText}`
       );
       const webhookResponse = response.data as RepositoryWebhookResponse;
-      console.info(webhookResponse);
+      logger.debug(webhookResponse);
       return webhookResponse;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       throw err;
     }
   }

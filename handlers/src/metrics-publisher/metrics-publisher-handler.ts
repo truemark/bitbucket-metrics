@@ -3,11 +3,12 @@ import {
   APIGatewayProxyStructuredResultV2,
 } from 'aws-lambda';
 import {BitBucketMetricsProcessor} from './metrics-processor';
+import {logger} from '../logging-utils/logger';
 
 export async function handler(
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyStructuredResultV2> {
-  console.info(
+  logger.debug(
     'Metrics Publisher Received event:',
     JSON.stringify(event.body, null, 2)
   );
