@@ -2,12 +2,15 @@
 
 Collect events from BitBucket Cloud and generates CloudWatch metrics
 
+## How this works
+![img.png](img/dfd.png)
+
 ## Build & Deploy
 
 ```bash
 pnpm i --frozen-lockfile
 pnpm build
-pnpm deploy
+cdk deploy
 ```
 
 ## This  project makes use of workspace tokens to access BitBucket Cloud API.
