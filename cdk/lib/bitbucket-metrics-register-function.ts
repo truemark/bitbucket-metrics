@@ -33,7 +33,7 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
       runtime: Runtime.NODEJS_20_X,
       architecture: Architecture.ARM_64,
       logRetention: RetentionDays.ONE_WEEK,
-      timeout: Duration.minutes(4),
+      timeout: Duration.minutes(15),
       environment: {
         SCM_SECRETS_MANAGER_NAME: SCM_SECRETS_MANAGER_NAME,
       },

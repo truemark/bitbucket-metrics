@@ -31,7 +31,7 @@ describe('BitBucketMetricsProcessor.process', () => {
     );
     await BitBucketMetricsProcessor.process(event);
     expect(mockPublish).toHaveBeenCalledWith(
-      'PipelineErrors',
+      'PipelineStatus',
       expect.anything(),
       StandardUnit.Count,
       1,
@@ -45,7 +45,7 @@ describe('BitBucketMetricsProcessor.process', () => {
     );
     await BitBucketMetricsProcessor.process(event);
     expect(mockPublish).toHaveBeenCalledWith(
-      'PipelineSuccess',
+      'PipelineStatus',
       expect.anything(),
       StandardUnit.Count,
       1,
