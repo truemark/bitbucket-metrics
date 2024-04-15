@@ -1,12 +1,16 @@
-import pino from 'pino';
+import * as logging from '@nr1e/logging';
 
-// Pino logger with asynchronous transport
-export const logger = pino({
-  level: 'info',
-  timestamp: pino.stdTimeFunctions.isoTime,
-  formatters: {
-    level(label: string) {
-      return {level: label};
-    },
-  },
-});
+export const rootLogger = logging.getRootLogger();
+export function getLogger(callerName: string) {
+  return logging.getLogger(callerName);
+}
+
+export async function initializeLogger(
+  callerName: string
+): Promise<logging.Logger> {
+  return await logging.initialize({
+    svc: 'BitbucketMetrics',
+    name: callerName,
+    level: 'info',
+  });
+}

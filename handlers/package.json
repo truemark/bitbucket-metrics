@@ -24,9 +24,9 @@
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "^3.515.0",
     "@aws-sdk/client-secrets-manager": "^3.554.0",
+    "@nr1e/logging": "^0.0.7",
     "axios": "^1.6.8",
-    "gts": "^5.2.0",
-    "pino": "^8.20.0"
+    "gts": "^5.2.0"
   },
   "engines": {
     "pnpm": "^8.0.0",

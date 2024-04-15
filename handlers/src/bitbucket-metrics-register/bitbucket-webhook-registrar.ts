@@ -7,7 +7,7 @@ import {
 } from './bitbucket-services-model';
 import {BitbucketAuthHelper, ScmData, Workspace} from './bitbucket-auth-helper';
 import {MetricsUtilities} from '../metrics-utilities/metrics-utilities';
-import {logger} from '../logging-utils/logger';
+import * as logging from '../logging-utils/logger';
 
 enum WebhookAction {
   CREATE = 'Create',
@@ -15,6 +15,8 @@ enum WebhookAction {
   NONE = 'None',
   NOT_ALLOWED = 'Not Allowed',
 }
+
+const logger = logging.getLogger('bitbucket-webhook-registrar');
 
 const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME
   ? process.env.SCM_SECRET_MANAGER_NAME
@@ -83,12 +85,12 @@ export class BitbucketWebhookRegistrar {
     if (!webhook) {
       return WebhookAction.CREATE;
     }
-    logger.debug('Webhook already exists with the same name');
+    logger.debug().msg('Webhook already exists with the same name');
     if (
       webhook.description === webhookName &&
       webhook.url === this.scmData!.callBackUrl
     ) {
-      logger.debug('Webhook already exists with the same name and URL');
+      logger.debug().msg('Webhook already exists with the same name and URL');
       return WebhookAction.NONE;
     } else {
       return WebhookAction.UPDATE;
@@ -104,7 +106,7 @@ export class BitbucketWebhookRegistrar {
     const repositorySlug = MetricsUtilities.createRepositorySlug(
       repository.name
     );
-    logger.debug(`Repository Slug: ${repositorySlug}`);
+    logger.debug().str('repositorySlug', repositorySlug).msg('Repository Slug');
 
     const webhook = await this.getWebhook(
       workspace,
@@ -147,17 +149,22 @@ export class BitbucketWebhookRegistrar {
         );
         break;
       case WebhookAction.NOT_ALLOWED:
-        logger.debug(
-          `Repository ${repository.name} in workspace ${workspace.name} not allowed to register webhooks.`
-        );
+        logger
+          .debug()
+          .str('repositoryName', repository.name)
+          .str('workspaceName', workspace.name)
+          .msg('Repository not allowed to register webhooks.');
         break;
       case WebhookAction.NONE:
-        logger.debug(
-          `Webhook ${webhookName} already exists for repository ${repository.name} in workspace ${workspace.name}`
-        );
+        logger
+          .debug()
+          .str('webhookName', webhookName)
+          .str('repositoryName', repository.name)
+          .str('workspaceName', workspace.name)
+          .msg('Webhook already exists for this repository');
         break;
       default:
-        logger.warn('Invalid webhook action');
+        logger.warn().msg('Invalid webhook action');
         break;
     }
   }
@@ -175,9 +182,6 @@ export class BitbucketWebhookRegistrar {
       );
     if (repositoryResponse) {
       for (const repository of repositoryResponse.values) {
-        logger.debug(
-          `Repository UUID: ${repository.uuid} and Name: ${repository.name}`
-        );
         await this.addWebhookToRepository(
           webhookName,
           repositoryEvents,
@@ -186,9 +190,10 @@ export class BitbucketWebhookRegistrar {
         );
       }
     } else {
-      logger.error(
-        `No repositories found under the workspace ${workspace.name}`
-      );
+      logger
+        .warn()
+        .str('workspaceName', workspace.name)
+        .msg('No repositories found under the workspace');
     }
     return repositoryResponse;
   }
@@ -197,7 +202,7 @@ export class BitbucketWebhookRegistrar {
     webhookName: string,
     repositoryEvents: string[]
   ): Promise<void> {
-    logger.info(`SCM Secret Manager Name: ${scmSecretManagerName}`);
+    logger.info().msg('About to register repository webhooks');
 
     if (
       !this.scmData ||
@@ -205,13 +210,19 @@ export class BitbucketWebhookRegistrar {
       this.scmData.workspaces.length === 0
     ) {
       const errorMassage = 'No workspaces found or workspace values are empty';
-      logger.error(errorMassage);
+      logger.error().msg(errorMassage);
       throw new Error(errorMassage);
     }
 
-    logger.info(`Workspaces: ${this.scmData.workspaces.length}`);
+    logger
+      .info()
+      .str('workspaces', this.scmData.workspaces.length.toString())
+      .msg('Available workspaces');
     for (const workspace of this.scmData.workspaces) {
-      logger.info(`Workspace: ${workspace.name}`);
+      logger
+        .info()
+        .str('workspaceName', workspace.name)
+        .msg('Workspace to be registered');
       let repositoryResponse: RepositoriesResponse | null = null;
       let count = 0;
       do {
@@ -228,9 +239,11 @@ export class BitbucketWebhookRegistrar {
           nextScmUrl
         );
         count++;
-        logger.info(
-          `Received ${repositoryResponse?.pagelen} repositories on page ${count}`
-        );
+        logger
+          .info()
+          .str('pageLenth', repositoryResponse?.pagelen.toString() ?? '0')
+          .str('pageNumber', count.toString())
+          .msg('Received repositories per page');
       } while (repositoryResponse?.next);
     }
   }

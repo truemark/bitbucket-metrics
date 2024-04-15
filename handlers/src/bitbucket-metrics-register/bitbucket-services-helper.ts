@@ -6,8 +6,9 @@ import {
   WebhookRequest,
   WebhookResponse,
 } from './bitbucket-services-model';
-import {logger} from '../logging-utils/logger';
+import * as logging from '../logging-utils/logger';
 
+const logger = logging.getLogger('bitbucket-services-helper');
 export class BitbucketServicesHelper {
   public static async getRepositoriesPaginated(
     workspace: Workspace,
@@ -15,23 +16,18 @@ export class BitbucketServicesHelper {
   ): Promise<RepositoriesResponse | null> {
     const newScmUrl =
       scmUrl ?? `https://api.bitbucket.org/2.0/repositories/${workspace.name}`;
-    try {
-      const response = await axios.get(newScmUrl, {
-        headers: {
-          Authorization: `Bearer ${workspace.token}`,
-          Accept: 'application/json',
-        },
-      });
-      logger.debug(
-        `Repository Response: ${response.status} ${response.statusText}`
-      );
-      const repositoriesResponse = response.data as RepositoriesResponse;
-      logger.debug(repositoriesResponse);
-      return repositoriesResponse;
-    } catch (err) {
-      logger.error(err);
-      throw err;
-    }
+    const response = await axios.get(newScmUrl, {
+      headers: {
+        Authorization: `Bearer ${workspace.token}`,
+        Accept: 'application/json',
+      },
+    });
+    logger
+      .debug()
+      .str('httpStatus', response.status.toString())
+      .str('httpStatusText', response.statusText)
+      .msg('Repository Response');
+    return response.data as RepositoriesResponse;
   }
 
   public static async getRepositories(
@@ -63,28 +59,23 @@ export class BitbucketServicesHelper {
     repositorySlug: string,
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
-    try {
-      const response = await axios.post(
-        `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
-        webhookRequest,
-        {
-          headers: {
-            Authorization: `Bearer ${workspace.token}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-        }
-      );
-      logger.debug(
-        `Webhook Creation Response: ${response.status} ${response.statusText}`
-      );
-      const webhookResponse = response.data as WebhookResponse;
-      logger.debug(webhookResponse);
-      return webhookResponse;
-    } catch (err) {
-      logger.error(err);
-      throw err;
-    }
+    const response = await axios.post(
+      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
+      webhookRequest,
+      {
+        headers: {
+          Authorization: `Bearer ${workspace.token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }
+    );
+    logger
+      .debug()
+      .str('httpStatus', response.status.toString())
+      .str('httpStatusText', response.statusText)
+      .msg('Webhook Creation Response');
+    return response.data as WebhookResponse;
   }
 
   public static async updateRepositoryWebhook(
@@ -93,53 +84,43 @@ export class BitbucketServicesHelper {
     webhookUuid: string,
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
-    try {
-      const response = await axios.put(
-        `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks/${webhookUuid}`,
-        webhookRequest,
-        {
-          headers: {
-            Authorization: `Bearer ${workspace.token}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-        }
-      );
-      logger.debug(
-        `Webhook Update Response: ${response.status} ${response.statusText}`
-      );
-      const webhookResponse = response.data as WebhookResponse;
-      logger.debug(webhookResponse);
-      return webhookResponse;
-    } catch (err) {
-      logger.error(err);
-      throw err;
-    }
+    const response = await axios.put(
+      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks/${webhookUuid}`,
+      webhookRequest,
+      {
+        headers: {
+          Authorization: `Bearer ${workspace.token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }
+    );
+    logger
+      .debug()
+      .str('httpStatus', response.status.toString())
+      .str('httpStatusText', response.statusText)
+      .msg('Webhook Update Response');
+    return response.data as WebhookResponse;
   }
 
   public static async getRepositoryWebhooks(
     workspace: Workspace,
     repositorySlug: string
   ): Promise<RepositoryWebhookResponse | null> {
-    try {
-      const response = await axios.get(
-        `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
-        {
-          headers: {
-            Authorization: `Bearer ${workspace.token}`,
-            Accept: 'application/json',
-          },
-        }
-      );
-      logger.debug(
-        `Repository Webhook Response: ${response.status} ${response.statusText}`
-      );
-      const webhookResponse = response.data as RepositoryWebhookResponse;
-      logger.debug(webhookResponse);
-      return webhookResponse;
-    } catch (err) {
-      logger.error(err);
-      throw err;
-    }
+    const response = await axios.get(
+      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
+      {
+        headers: {
+          Authorization: `Bearer ${workspace.token}`,
+          Accept: 'application/json',
+        },
+      }
+    );
+    logger
+      .debug()
+      .str('httpStatus', response.status.toString())
+      .str('httpStatusText', response.statusText)
+      .msg('List Repository Repository Response');
+    return response.data as RepositoryWebhookResponse;
   }
 }

@@ -1,6 +1,8 @@
 import path from 'path';
 import fs from 'fs';
-import {logger} from '../logging-utils/logger';
+import * as logging from '../logging-utils/logger';
+
+const logger = logging.getLogger('metrics-utilities');
 
 export class MetricsUtilities {
   public static createRepositorySlug(repositoryName: string): string {
@@ -16,8 +18,8 @@ export class MetricsUtilities {
     try {
       const data = fs.readFileSync(jsonFilePath, 'utf8');
       return JSON.parse(data);
-    } catch (err) {
-      logger.error(`Error reading file from disk: ${err}`);
+    } catch (error) {
+      logger.error().err(error).msg('Error reading file from disk');
     }
   }
 }
