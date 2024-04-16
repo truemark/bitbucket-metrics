@@ -20,8 +20,7 @@ export class BitbucketMetrics extends Construct {
     });
 
     new BitbucketMetricsRegisterFunction(this, 'Register', {
-      //cronExpression: 'cron(0 12 * * ? *)',
-      cronExpression: 'cron(*/10 * * * ? *)',
+      cronExpression: 'cron(0 12 * * ? *)',
     });
   }
 }

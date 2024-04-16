@@ -1,7 +1,7 @@
 import {BitbucketMetricsPublisher} from './bitbucket-metrics-publisher';
 import {StandardUnit} from '@aws-sdk/client-cloudwatch';
 import {BitbucketEvent} from './bitbucket-events-model';
-import * as logging from '../logging-utils/logger';
+import {logger} from '../logging-utils/logger';
 
 const METRICS_NAMESPACE = 'TrueMark/Bitbucket';
 const DIMENSTION_NAME_PIPELINE_STATE = 'PipelineState';
@@ -13,8 +13,6 @@ interface MetricStructure {
   name: string;
   unit: StandardUnit;
 }
-
-const logger = logging.getLogger('metrics-processor');
 export class BitBucketMetricsProcessor {
   private static getMetricStructure(pipelineState: string): MetricStructure {
     if (pipelineState === 'FAILED' || pipelineState === 'SUCCESSFUL') {
@@ -24,15 +22,15 @@ export class BitBucketMetricsProcessor {
   }
 
   public static async process(event: BitbucketEvent): Promise<void> {
-    logger.debug().obj('event', event).msg('Received Bitbucket event');
+    logger.debug('Received bitbucket event:', JSON.stringify(event, null, 2));
     if (!event.commit_status) {
-      logger.info().msg('Not a pipeline event. Ignoring.');
+      logger.info('Not a pipeline event. Ignoring.');
       return;
     }
     const pipelineState = event.commit_status.state;
     const metricStructure = this.getMetricStructure(pipelineState);
     if (metricStructure.name === 'NONE') {
-      logger.info().msg('Unsupported pipeline state. Ignoring');
+      logger.info('Unsupported pipeline state. Ignoring');
       return;
     }
     const repositoryName = event.repository.name;
@@ -59,10 +57,7 @@ export class BitBucketMetricsProcessor {
         pipelineTime
       );
     } else {
-      logger
-        .warn()
-        .str('metricUnit', metricStructure.unit)
-        .msg('Invalid metric unit');
+      logger.warn(`Invalid metric unit ${metricStructure.unit}`);
     }
   }
 }

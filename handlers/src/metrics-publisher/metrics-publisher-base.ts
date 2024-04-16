@@ -5,9 +5,7 @@ import {
   PutMetricDataCommand,
   StandardUnit,
 } from '@aws-sdk/client-cloudwatch';
-import * as logging from '../logging-utils/logger';
-
-const logger = logging.getLogger('metric-publisher-base');
+import {logger} from '../logging-utils/logger';
 
 export abstract class MetricPublisherBase {
   protected namespace: string;
@@ -30,7 +28,7 @@ export abstract class MetricPublisherBase {
     unitValue: number,
     timestamp: Date
   ): Promise<void> {
-    logger.debug().msg('Publishing metric');
+    logger.debug('Publishing metric');
 
     const command = new PutMetricDataCommand({
       MetricData: [
@@ -44,12 +42,12 @@ export abstract class MetricPublisherBase {
       ],
       Namespace: this.namespace,
     });
-    logger.debug().obj('command', command).msg('PutMetricDataCommand data');
+    logger.debug(`PutMetricDataCommand data: ${JSON.stringify(command)}`);
     await this.client
       .send(command)
-      .then(() => logger.info().msg('Successfully published metric'))
-      .catch(err => {
-        logger.error().err(err).msg('Failed to publish metric.');
+      .then(() => logger.info('Successfully published metric'))
+      .catch(error => {
+        logger.error('Failed to publish metric.', {error});
         throw new Error('Failed to publish metric');
       });
   }

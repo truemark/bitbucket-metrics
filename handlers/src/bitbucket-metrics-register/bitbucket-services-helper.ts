@@ -6,9 +6,8 @@ import {
   WebhookRequest,
   WebhookResponse,
 } from './bitbucket-services-model';
-import * as logging from '../logging-utils/logger';
+import {logger} from '../logging-utils/logger';
 
-const logger = logging.getLogger('bitbucket-services-helper');
 export class BitbucketServicesHelper {
   public static async getRepositoriesPaginated(
     workspace: Workspace,
@@ -22,11 +21,9 @@ export class BitbucketServicesHelper {
         Accept: 'application/json',
       },
     });
-    logger
-      .debug()
-      .str('httpStatus', response.status.toString())
-      .str('httpStatusText', response.statusText)
-      .msg('Repository Response');
+    logger.debug(
+      `Repository Response: ${response.status} ${response.statusText}`
+    );
     return response.data as RepositoriesResponse;
   }
 
@@ -70,11 +67,9 @@ export class BitbucketServicesHelper {
         },
       }
     );
-    logger
-      .debug()
-      .str('httpStatus', response.status.toString())
-      .str('httpStatusText', response.statusText)
-      .msg('Webhook Creation Response');
+    logger.debug(
+      `Webhook Creation Response: ${response.status} ${response.statusText}`
+    );
     return response.data as WebhookResponse;
   }
 
@@ -95,11 +90,9 @@ export class BitbucketServicesHelper {
         },
       }
     );
-    logger
-      .debug()
-      .str('httpStatus', response.status.toString())
-      .str('httpStatusText', response.statusText)
-      .msg('Webhook Update Response');
+    logger.debug(
+      `Webhook Update Response: ${response.status} ${response.statusText}`
+    );
     return response.data as WebhookResponse;
   }
 
@@ -116,11 +109,9 @@ export class BitbucketServicesHelper {
         },
       }
     );
-    logger
-      .debug()
-      .str('httpStatus', response.status.toString())
-      .str('httpStatusText', response.statusText)
-      .msg('List Repository Repository Response');
+    logger.debug(
+      `Repository Webhook Response: ${response.status} ${response.statusText}`
+    );
     return response.data as RepositoryWebhookResponse;
   }
 }
