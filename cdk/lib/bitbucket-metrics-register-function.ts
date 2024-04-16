@@ -16,6 +16,7 @@ const SCM_SECRETS_MANAGER_NAME = 'BitbucketScmSecret';
 
 export interface CronFunctionProps extends ExtendedNodejsFunctionProps {
   readonly cronExpression: string;
+  readonly apiGatewayUrl: string;
 }
 export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
   constructor(scope: Construct, id: string, props: CronFunctionProps) {
@@ -63,7 +64,10 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
         secretStringTemplate: JSON.stringify(
           {
             workspaces: [{name: 'workspace1', token: 'token1'}],
-            callBackUrl: 'https://test.io',
+            callBackUrl: `${props.apiGatewayUrl.replace(
+              /\/$/,
+              ''
+            )}/v1/bitbucket/metrics-publishers`,
             repositories: [
               'change to ALL to allow all repositories or add specific repository names',
             ],

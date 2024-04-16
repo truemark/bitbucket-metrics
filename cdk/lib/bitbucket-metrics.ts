@@ -21,6 +21,7 @@ export class BitbucketMetrics extends Construct {
 
     new BitbucketMetricsRegisterFunction(this, 'Register', {
       cronExpression: 'cron(0 12 * * ? *)',
+      apiGatewayUrl: httpApi.url!,
     });
   }
 }
