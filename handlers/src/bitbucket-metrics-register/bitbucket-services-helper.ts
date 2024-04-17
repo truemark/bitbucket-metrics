@@ -14,7 +14,10 @@ export class BitbucketServicesHelper {
     scmUrl?: string
   ): Promise<RepositoriesResponse | null> {
     const newScmUrl =
-      scmUrl ?? `https://api.bitbucket.org/2.0/repositories/${workspace.name}`;
+      scmUrl ??
+      `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
+        workspace.name
+      )}`;
     const response = await axios.get(newScmUrl, {
       headers: {
         Authorization: `Bearer ${workspace.token}`,
@@ -57,7 +60,9 @@ export class BitbucketServicesHelper {
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
     const response = await axios.post(
-      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
+      `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
+        workspace.name
+      )}/${repositorySlug}/hooks`,
       webhookRequest,
       {
         headers: {
@@ -80,7 +85,9 @@ export class BitbucketServicesHelper {
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
     const response = await axios.put(
-      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks/${webhookUuid}`,
+      `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
+        workspace.name
+      )}/${repositorySlug}/hooks/${webhookUuid}`,
       webhookRequest,
       {
         headers: {
@@ -101,7 +108,9 @@ export class BitbucketServicesHelper {
     repositorySlug: string
   ): Promise<RepositoryWebhookResponse | null> {
     const response = await axios.get(
-      `https://api.bitbucket.org/2.0/repositories/${workspace.name}/${repositorySlug}/hooks`,
+      `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
+        workspace.name
+      )}/${repositorySlug}/hooks`,
       {
         headers: {
           Authorization: `Bearer ${workspace.token}`,
