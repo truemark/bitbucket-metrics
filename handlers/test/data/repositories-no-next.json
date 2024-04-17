@@ -1,0 +1,146 @@
+{
+  "size": 142,
+  "page": 102,
+  "pagelen": 159,
+  "previous": "<string>",
+  "values": [
+    {
+      "type": "<string>",
+      "links": {
+        "self": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "html": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "avatar": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "pullrequests": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "commits": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "forks": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "watchers": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "downloads": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "clone": [
+          {
+            "href": "<string>",
+            "name": "<string>"
+          }
+        ],
+        "hooks": {
+          "href": "<string>",
+          "name": "<string>"
+        }
+      },
+      "uuid": "123",
+      "full_name": "<string>",
+      "is_private": true,
+      "scm": "git",
+      "owner": {
+        "type": "<string>"
+      },
+      "name": "repo1",
+      "description": "<string>",
+      "created_on": "<string>",
+      "updated_on": "<string>",
+      "size": 2154,
+      "language": "<string>",
+      "has_issues": true,
+      "has_wiki": true,
+      "fork_policy": "allow_forks",
+      "project": {
+        "type": "<string>"
+      },
+      "mainbranch": {
+        "type": "<string>"
+      }
+    },
+    {
+      "type": "<string>",
+      "links": {
+        "self": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "html": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "avatar": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "pullrequests": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "commits": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "forks": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "watchers": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "downloads": {
+          "href": "<string>",
+          "name": "<string>"
+        },
+        "clone": [
+          {
+            "href": "<string>",
+            "name": "<string>"
+          }
+        ],
+        "hooks": {
+          "href": "<string>",
+          "name": "<string>"
+        }
+      },
+      "uuid": "1234",
+      "full_name": "<string>",
+      "is_private": true,
+      "scm": "git",
+      "owner": {
+        "type": "<string>"
+      },
+      "name": "repo2",
+      "description": "<string>",
+      "created_on": "<string>",
+      "updated_on": "<string>",
+      "size": 2154,
+      "language": "<string>",
+      "has_issues": true,
+      "has_wiki": true,
+      "fork_policy": "allow_forks",
+      "project": {
+        "type": "<string>"
+      },
+      "mainbranch": {
+        "type": "<string>"
+      }
+    }
+  ]
+}

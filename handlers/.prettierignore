@@ -1,4 +1,5 @@
 pnpm-lock.yaml
-src/**/*.js
+**/**/*.js
 src/**/*.d.ts
+test/data/**/*.json
 

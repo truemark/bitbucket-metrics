@@ -1,7 +1,8 @@
 import {Construct} from 'constructs';
 import {HttpApi} from 'aws-cdk-lib/aws-apigatewayv2';
 import {Stack, Stage} from 'aws-cdk-lib';
-import {MainFunction} from './main-function';
+import {MetricsPublisherFunction} from './metrics-publisher-function';
+import {BitbucketMetricsRegisterFunction} from './bitbucket-metrics-register-function';
 
 export class BitbucketMetrics extends Construct {
   constructor(scope: Construct, id: string) {
@@ -14,8 +15,13 @@ export class BitbucketMetrics extends Construct {
       apiName: `${stage?.stageName}${stack?.stackName}Gateway`,
     });
 
-    new MainFunction(this, 'Main', {
+    new MetricsPublisherFunction(this, 'Publisher', {
       apiGateway: httpApi,
+    });
+
+    new BitbucketMetricsRegisterFunction(this, 'Register', {
+      cronExpression: 'cron(0 12 * * ? *)',
+      apiGatewayUrl: httpApi.url!,
     });
   }
 }

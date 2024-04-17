@@ -1,0 +1,124 @@
+<mxfile host="app.diagrams.net" modified="2024-04-15T12:45:36.862Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15" etag="Ww2bP41_DjidvYnxf3Iu" version="24.2.5" type="device">
+  <diagram name="Page-1" id="CxAPu65pWp7bk08g-8Y_">
+    <mxGraphModel dx="960" dy="687" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ZCdSIIBn0_6OV_UCYT79-1" target="ZCdSIIBn0_6OV_UCYT79-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-1" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;" parent="1" vertex="1">
+          <mxGeometry x="40" y="300" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" parent="1" source="ZCdSIIBn0_6OV_UCYT79-2" target="ZCdSIIBn0_6OV_UCYT79-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ZCdSIIBn0_6OV_UCYT79-2" target="ZCdSIIBn0_6OV_UCYT79-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-2" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" parent="1" vertex="1">
+          <mxGeometry x="300" y="300" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZCdSIIBn0_6OV_UCYT79-3" target="1uUT0825iMONxO1MN1am-11">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="740" y="640" />
+              <mxPoint x="85" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-3" value="" style="image;html=1;image=img/lib/atlassian/Bitbucket_Logo.svg;" parent="1" vertex="1">
+          <mxGeometry x="700" y="299" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-4" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.secrets_manager;" parent="1" vertex="1">
+          <mxGeometry x="300" y="130" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="ZCdSIIBn0_6OV_UCYT79-4" target="ZCdSIIBn0_6OV_UCYT79-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-10" value="Webhook Registration Lambda" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="269" y="379" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-12" value="Create/Update Repository Webook" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="440" y="340" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-13" value="1. Fetch Workspace Repositories&amp;nbsp;&lt;div&gt;2. Fetch Repository Webhooks &amp;nbsp;&amp;nbsp;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="480" y="228" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-14" value="JSON Secret containing:&lt;div&gt;- List of a pair of workspace and access token&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;- CDK generated bitbucket secrets&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;- List of allow listed repositories&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;" parent="1" vertex="1">
+          <mxGeometry x="220" y="30" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-15" value="Bitbucket Cloud" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="660" y="370" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-16" value="Secrets Manager" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="360" y="140" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-17" value="Event Bridge" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry y="379" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZCdSIIBn0_6OV_UCYT79-20" value="Webhook Registration Daily Cron Event" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;" parent="1" vertex="1">
+          <mxGeometry x="10" y="208" width="149" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="1uUT0825iMONxO1MN1am-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="118" y="799" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="1uUT0825iMONxO1MN1am-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="799" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-3" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
+          <mxGeometry x="300" y="760" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-4" value="Bitbucket Metrics Publisher Lambda" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="269" y="839" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-5" value="Publish Pipeline metrics" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="440" y="800" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-6" value="1.Consolidates metrics&lt;div&gt;2. Publish metrics&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="290" y="701" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-8" value="API Gateway" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="10" y="838" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-11" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;" vertex="1" parent="1">
+          <mxGeometry x="45.5" y="761" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="1uUT0825iMONxO1MN1am-11">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="84.5" y="640" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-13" value="Submit events to Gateway" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="520" y="600" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-14" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.cloudwatch;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="710" y="761" width="82.5" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-15" value="Cloud Watch" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="690" y="848" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-19" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;" vertex="1" parent="1">
+          <mxGeometry y="545" width="840" height="415" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-20" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;dashPattern=8 8;" vertex="1" parent="1">
+          <mxGeometry x="4" y="10" width="666" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-21" value="Repository Webhook Registration" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="440" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-22" value="Bitbucket Metrics Publisher" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="49" y="930" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1uUT0825iMONxO1MN1am-23" value="Pipeline Events" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="400" width="80" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
