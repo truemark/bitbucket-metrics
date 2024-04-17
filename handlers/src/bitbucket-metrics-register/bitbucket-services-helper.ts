@@ -15,11 +15,15 @@ export class BitbucketServicesHelper {
   ): Promise<RepositoriesResponse | null> {
     // TODO add query parameter pagelen to get more than 10 repositories at a time and reduce API calls
     // TODO Need to handle 429 errors and do a backoff strategy
-    const newScmUrl =
+    let newScmUrl =
       scmUrl ??
       `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
         workspace.name
       )}`;
+    if (!newScmUrl.includes('pagelen')) {
+      newScmUrl += newScmUrl.includes('?') ? '&pagelen=100' : '?pagelen=100';
+    }
+
     const response = await axios.get(newScmUrl, {
       headers: {
         Authorization: `Bearer ${workspace.token}`,
@@ -61,7 +65,6 @@ export class BitbucketServicesHelper {
     repositorySlug: string,
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
-    // TODO Need to handle 429 errors and do a backoff strategy
     for (let i = 0; i < 3; i++) {
       try {
         const response = await axios.post(
@@ -86,9 +89,11 @@ export class BitbucketServicesHelper {
           const ae = e as AxiosError;
           if (ae.status === 429) {
             logger.warn(
-              'Rate limited while creating webhook, retrying in 5 seconds'
+              'Rate limited while creating webhook, retrying in 10 seconds'
             );
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, 10000));
+          } else {
+            throw e;
           }
         } else {
           throw e;
@@ -105,23 +110,42 @@ export class BitbucketServicesHelper {
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
     // TODO Need to handle 429 errors and do a backoff strategy
-    const response = await axios.put(
-      `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
-        workspace.name
-      )}/${repositorySlug}/hooks/${webhookUuid}`,
-      webhookRequest,
-      {
-        headers: {
-          Authorization: `Bearer ${workspace.token}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+    for (let i = 0; i < 3; i++) {
+      try {
+        const response = await axios.put(
+          `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
+            workspace.name
+          )}/${repositorySlug}/hooks/${webhookUuid}`,
+          webhookRequest,
+          {
+            headers: {
+              Authorization: `Bearer ${workspace.token}`,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+          }
+        );
+        logger.debug(
+          `Webhook Update Response: ${response.status} ${response.statusText}`
+        );
+        return response.data as WebhookResponse;
+      } catch (e) {
+        if (isAxiosError(e)) {
+          const ae = e as AxiosError;
+          if (ae.status === 429) {
+            logger.warn(
+              'Rate limited while updating webhook, retrying in 10 seconds'
+            );
+            await new Promise(resolve => setTimeout(resolve, 10000));
+          } else {
+            throw e;
+          }
+        } else {
+          throw e;
+        }
       }
-    );
-    logger.debug(
-      `Webhook Update Response: ${response.status} ${response.statusText}`
-    );
-    return response.data as WebhookResponse;
+    }
+    throw new Error('Retries exhausted, failed to update webhook');
   }
 
   public static async getRepositoryWebhooks(
@@ -151,9 +175,11 @@ export class BitbucketServicesHelper {
           const ae = e as AxiosError;
           if (ae.status === 429) {
             logger.warn(
-              'Rate limited while getting webhooks, retrying in 5 seconds'
+              'Rate limited while getting webhooks, retrying in 10 seconds'
             );
             await new Promise(resolve => setTimeout(resolve, 10000));
+          } else {
+            throw e;
           }
         } else {
           throw e;
