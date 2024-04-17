@@ -88,7 +88,7 @@ export class BitbucketServicesHelper {
         if (isAxiosError(e)) {
           const ae = e as AxiosError;
           if (ae.status === 429) {
-            logger.warn(
+            logger.info(
               'Rate limited while creating webhook, retrying in 10 seconds'
             );
             await new Promise(resolve => setTimeout(resolve, 10000));
@@ -133,7 +133,7 @@ export class BitbucketServicesHelper {
         if (isAxiosError(e)) {
           const ae = e as AxiosError;
           if (ae.status === 429) {
-            logger.warn(
+            logger.info(
               'Rate limited while updating webhook, retrying in 10 seconds'
             );
             await new Promise(resolve => setTimeout(resolve, 10000));
@@ -174,7 +174,7 @@ export class BitbucketServicesHelper {
         if (isAxiosError(e)) {
           const ae = e as AxiosError;
           if (ae.status === 429) {
-            logger.warn(
+            logger.info(
               'Rate limited while getting webhooks, retrying in 10 seconds'
             );
             await new Promise(resolve => setTimeout(resolve, 10000));
