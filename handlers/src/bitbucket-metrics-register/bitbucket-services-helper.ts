@@ -14,6 +14,7 @@ export class BitbucketServicesHelper {
     scmUrl?: string
   ): Promise<RepositoriesResponse | null> {
     // TODO add query parameter pagelen to get more than 10 repositories at a time and reduce API calls
+    // TODO Need to handle 429 errors and do a backoff strategy
     const newScmUrl =
       scmUrl ??
       `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
@@ -60,6 +61,7 @@ export class BitbucketServicesHelper {
     repositorySlug: string,
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
+    // TODO Need to handle 429 errors and do a backoff strategy
     const response = await axios.post(
       `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
         workspace.name
@@ -85,6 +87,7 @@ export class BitbucketServicesHelper {
     webhookUuid: string,
     webhookRequest: WebhookRequest
   ): Promise<WebhookResponse | null> {
+    // TODO Need to handle 429 errors and do a backoff strategy
     const response = await axios.put(
       `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
         workspace.name
@@ -108,6 +111,7 @@ export class BitbucketServicesHelper {
     workspace: Workspace,
     repositorySlug: string
   ): Promise<RepositoryWebhookResponse | null> {
+    // TODO Need to handle 429 errors and do a backoff strategy
     const response = await axios.get(
       `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
         workspace.name
