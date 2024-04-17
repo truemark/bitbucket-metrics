@@ -13,6 +13,7 @@ export class BitbucketServicesHelper {
     workspace: Workspace,
     scmUrl?: string
   ): Promise<RepositoriesResponse | null> {
+    // TODO add query parameter pagelen to get more than 10 repositories at a time and reduce API calls
     const newScmUrl =
       scmUrl ??
       `https://api.bitbucket.org/2.0/repositories/${encodeURIComponent(
