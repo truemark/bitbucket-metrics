@@ -38,6 +38,9 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
       environment: {
         SCM_SECRETS_MANAGER_NAME: SCM_SECRETS_MANAGER_NAME,
       },
+      deploymentOptions: {
+        createDeployment: false,
+      },
     });
 
     this.addToRolePolicy(

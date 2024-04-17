@@ -30,6 +30,9 @@ export class MetricsPublisherFunction extends ExtendedNodejsFunction {
       runtime: Runtime.NODEJS_20_X,
       architecture: Architecture.ARM_64,
       logRetention: RetentionDays.ONE_WEEK,
+      deploymentOptions: {
+        createDeployment: false,
+      },
     });
 
     this.addToRolePolicy(
