@@ -38,6 +38,7 @@ export interface Repository {
   scm: string;
   owner: Owner;
   name: string;
+  slug: string;
   description: string;
   created_on: string;
   updated_on: string;

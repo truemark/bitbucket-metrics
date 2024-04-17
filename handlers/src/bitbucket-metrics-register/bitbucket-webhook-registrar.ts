@@ -102,7 +102,7 @@ export class BitbucketWebhookRegistrar {
     repository: Repository
   ): Promise<void> {
     const repositorySlug = MetricsUtilities.createRepositorySlug(
-      repository.name
+      repository.slug
     );
     logger.debug(`Repository Slug: ${repositorySlug}`);
 
