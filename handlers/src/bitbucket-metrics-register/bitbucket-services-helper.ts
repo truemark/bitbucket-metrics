@@ -153,7 +153,7 @@ export class BitbucketServicesHelper {
             logger.warn(
               'Rate limited while getting webhooks, retrying in 5 seconds'
             );
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, 10000));
           }
         } else {
           throw e;
