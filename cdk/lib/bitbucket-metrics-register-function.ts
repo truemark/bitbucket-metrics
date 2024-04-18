@@ -17,6 +17,7 @@ const SCM_SECRETS_MANAGER_NAME = 'BitbucketScmSecret';
 export interface CronFunctionProps extends ExtendedNodejsFunctionProps {
   readonly cronExpression: string;
   readonly apiGatewayUrl: string;
+  readonly repositoryTrackerTableName: string;
 }
 export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
   constructor(scope: Construct, id: string, props: CronFunctionProps) {
@@ -37,6 +38,7 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
       timeout: Duration.minutes(15),
       environment: {
         SCM_SECRETS_MANAGER_NAME: SCM_SECRETS_MANAGER_NAME,
+        REPOSITORY_TRACKER_TABLE_NAME: props.repositoryTrackerTableName,
       },
       deploymentOptions: {
         createDeployment: false,
@@ -50,6 +52,13 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
           'secretsmanager:DescribeSecret',
           'secretsmanager:ListSecrets',
         ],
+        resources: ['*'],
+      })
+    );
+
+    this.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['events:PutRule', 'events:PutTargets'],
         resources: ['*'],
       })
     );
