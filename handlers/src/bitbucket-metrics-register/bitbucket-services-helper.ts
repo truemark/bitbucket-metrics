@@ -8,7 +8,7 @@ import {
 import {logger} from '../logging-utils/logger';
 import {TimedExponentialBackoff} from '../metrics-utilities/timed-exponential-backoff';
 
-const REMAINING_TIME_HEADER_NAME = 'retry-after';
+const REMAINING_TIME_HEADER_NAME = 'retry-after-time';
 
 export class BitbucketServicesHelper {
   public static async getRepositoriesPaginated(

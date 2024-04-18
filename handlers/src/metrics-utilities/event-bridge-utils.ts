@@ -8,6 +8,7 @@ import {
 const eventBridge = new EventBridgeClient({region: process.env.AWS_REGION});
 export class EventBridgeUtils {
   public static async scheduleCron(
+    cronPrefix: string,
     lambdaName: string,
     lambdaArn: string,
     retryTime: Date
@@ -16,7 +17,7 @@ export class EventBridgeUtils {
       `Scheduling cron job: ${lambdaName} at ${retryTime} and arn: ${lambdaArn}`
     );
 
-    const ruleName = `${lambdaName}-retryRule-${retryTime}`;
+    const ruleName = `${cronPrefix}-Retry`;
     await eventBridge.send(
       new PutRuleCommand({
         Name: ruleName,

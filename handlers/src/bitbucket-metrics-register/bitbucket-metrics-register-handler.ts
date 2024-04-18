@@ -34,10 +34,10 @@ export async function handler(
     if (error instanceof ThrottlingError) {
       // Handle ThrottlingError
       console.error('ThrottlingError occurred:', error.message);
-      const currentDate = new Date();
-      currentDate.setMinutes(currentDate.getMinutes() + 61); // Start after an hour
-      const retryTime = currentDate;
+      const retryTime = new Date();
+      retryTime.setMinutes(retryTime.getMinutes() + 61); // Start after an hour
       await EventBridgeUtils.scheduleCron(
+        'BitBucketMetricsRegister',
         context.functionName,
         context.invokedFunctionArn,
         retryTime

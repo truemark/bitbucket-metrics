@@ -20,8 +20,8 @@ export class TimedExponentialBackoff {
   private nextDelayWithJitter: number;
 
   constructor(remainingTimeHeader: string) {
-    this.initialDelay = 150_000; //ms
-    this.maxDelay = 600_0000; // Maximum delay between retries
+    this.initialDelay = 60_000; //ms
+    this.maxDelay = 180_0000; // Maximum delay between retries
     this.multiplier = 2; // Exponential backoff multiplier
     this.jitter = Math.floor(Math.random() * 10);
 
@@ -46,10 +46,11 @@ export class TimedExponentialBackoff {
   public async makeRequest(
     url: string,
     method: Method,
-    headers?: {[key: string]: string},
+    headers: {[key: string]: string},
     data?: any,
     retries = 3
   ): Promise<AxiosResponse<any>> {
+    logger.debug(`Retries left: ${retries} `);
     const config: AxiosRequestConfig = {
       method: method,
       url: url,
@@ -89,7 +90,7 @@ export class TimedExponentialBackoff {
             `Rate limit exceeded. Retrying after ${retryAfter / 1000} seconds.`
           );
           await new Promise(resolve => setTimeout(resolve, retryAfter));
-          return this.makeRequest(url, method, data, retries - 1); // Retry the request
+          return this.makeRequest(url, method, headers, data, retries - 1); // Retry the request
         } else {
           throw new ThrottlingError('Rate limit exceeded');
         }

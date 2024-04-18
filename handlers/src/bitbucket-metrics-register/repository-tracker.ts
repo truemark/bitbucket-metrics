@@ -32,7 +32,7 @@ export class RepositoryTrackerService {
     };
     try {
       await this.documentClient.send(new PutCommand(params));
-      logger.info(`Saved tracker for workspace: ${tracker.workspaceName}`);
+      logger.debug(`Saved tracker for workspace: ${tracker.workspaceName}`);
     } catch (error) {
       logger.error(error);
       throw new Error(
@@ -51,7 +51,7 @@ export class RepositoryTrackerService {
 
     try {
       const data = await this.documentClient.send(new GetCommand(params));
-      logger.info(`Got tracker for workspace: ${workspaceName}`);
+      logger.debug(`Got tracker for workspace: ${workspaceName}`);
       return data.Item as RepositoryTracker;
     } catch (error) {
       logger.error(`Could not get tracker for workspace: ${workspaceName}`, {
