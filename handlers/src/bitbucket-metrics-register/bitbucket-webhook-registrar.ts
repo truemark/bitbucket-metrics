@@ -8,6 +8,7 @@ import {
 import {BitbucketAuthHelper, ScmData, Workspace} from './bitbucket-auth-helper';
 import {MetricsUtilities} from '../metrics-utilities/metrics-utilities';
 import {logger} from '../logging-utils/logger';
+import {RepositoryTrackerService} from './repository-tracker';
 
 enum WebhookAction {
   CREATE = 'Create',
@@ -23,8 +24,11 @@ const scmSecretManagerName = process.env.SCM_SECRET_MANAGER_NAME
 export class BitbucketWebhookRegistrar {
   scmData: ScmData | null = null;
   allowListedRepositories: string[] = [];
+  readonly repositoryTrackerService: RepositoryTrackerService;
 
-  private constructor() {}
+  private constructor() {
+    this.repositoryTrackerService = new RepositoryTrackerService();
+  }
 
   private async initialize(): Promise<void> {
     this.scmData = await BitbucketAuthHelper.getScmData(scmSecretManagerName);
@@ -220,7 +224,11 @@ export class BitbucketWebhookRegistrar {
       do {
         let nextScmUrl: string | undefined;
         if (!repositoryResponse) {
-          nextScmUrl = undefined;
+          const trackerItem = await this.repositoryTrackerService.getTracker(
+            workspace.name
+          );
+          nextScmUrl =
+            trackerItem?.nextUrl === 'NONE' ? undefined : trackerItem?.nextUrl;
         } else {
           nextScmUrl = repositoryResponse?.next;
         }
@@ -234,7 +242,12 @@ export class BitbucketWebhookRegistrar {
         logger.info(
           `Received ${repositoryResponse?.pagelen} repositories on page ${count}`
         );
+        await this.repositoryTrackerService.saveTracker({
+          workspaceName: workspace.name,
+          nextUrl: repositoryResponse?.next ?? 'NONE',
+        });
       } while (repositoryResponse?.next);
     }
+    logger.error('Repository webhooks registration completed');
   }
 }
