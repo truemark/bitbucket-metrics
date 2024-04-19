@@ -62,6 +62,7 @@ export class BitbucketMetricsRegisterFunction extends ExtendedNodejsFunction {
         resources: ['*'],
       })
     );
+
     process.env.SCM_SECRET_MANAGER_NAME = SCM_SECRETS_MANAGER_NAME;
 
     const rule = new Rule(this.stack, 'BitbucketMetricsRegisterRule', {

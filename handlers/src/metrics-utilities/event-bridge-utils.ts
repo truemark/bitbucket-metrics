@@ -32,7 +32,7 @@ export class EventBridgeUtils {
         Rule: ruleName,
         Targets: [
           {
-            Id: 'default',
+            Id: 'retryTarget',
             Arn: lambdaArn,
           },
         ],

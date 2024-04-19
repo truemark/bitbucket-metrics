@@ -4,6 +4,7 @@ import {Stack, Stage} from 'aws-cdk-lib';
 import {MetricsPublisherFunction} from './metrics-publisher-function';
 import {BitbucketMetricsRegisterFunction} from './bitbucket-metrics-register-function';
 import {AttributeType, BillingMode, Table} from 'aws-cdk-lib/aws-dynamodb';
+import {ServicePrincipal} from 'aws-cdk-lib/aws-iam';
 
 export class BitbucketMetrics extends Construct {
   constructor(scope: Construct, id: string) {
@@ -34,6 +35,10 @@ export class BitbucketMetrics extends Construct {
         apiGatewayUrl: httpApi.url!,
         repositoryTrackerTableName: repositoryTracker.tableName,
       }
+    );
+
+    metricsRegisterFunction.grantInvoke(
+      new ServicePrincipal('events.amazonaws.com')
     );
 
     // Grant the Lambda function read/write permissions to the table

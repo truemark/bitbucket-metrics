@@ -20,7 +20,7 @@ export class TimedExponentialBackoff {
   private nextDelayWithJitter: number;
 
   constructor(remainingTimeHeader: string) {
-    this.initialDelay = 60_000; //ms
+    this.initialDelay = 60000; //ms
     this.maxDelay = 180_0000; // Maximum delay between retries
     this.multiplier = 2; // Exponential backoff multiplier
     this.jitter = Math.floor(Math.random() * 10);
