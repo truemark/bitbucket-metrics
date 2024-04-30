@@ -38,6 +38,7 @@ export abstract class MetricPublisherBase {
           Unit: unitType,
           Timestamp: timestamp,
           Value: unitValue,
+          StorageResolution: 60,
         },
       ],
       Namespace: this.namespace,
