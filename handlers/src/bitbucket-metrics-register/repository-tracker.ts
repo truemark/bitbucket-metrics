@@ -4,7 +4,9 @@ import {
   PutCommand,
 } from '@aws-sdk/lib-dynamodb';
 import {DynamoDBClient} from '@aws-sdk/client-dynamodb';
-import {logger} from '../logging-utils/logger';
+import * as logging from '@nr1e/logging';
+
+const log = logging.getLogger('repository-tracker');
 
 export interface RepositoryTracker {
   readonly workspaceName: string;
@@ -32,9 +34,16 @@ export class RepositoryTrackerService {
     };
     try {
       await this.documentClient.send(new PutCommand(params));
-      logger.debug(`Saved tracker for workspace: ${tracker.workspaceName}`);
+      log
+        .debug()
+        .str('workspaceName', tracker.workspaceName)
+        .msg('Saved tracker');
     } catch (error) {
-      logger.error(error);
+      log
+        .error()
+        .err(error)
+        .str('workspaceName', tracker.workspaceName)
+        .msg('Could not save tracker');
       throw new Error(
         `Could not save tracker for workspace: ${tracker.workspaceName}`
       );
@@ -51,12 +60,14 @@ export class RepositoryTrackerService {
 
     try {
       const data = await this.documentClient.send(new GetCommand(params));
-      logger.debug(`Got tracker for workspace: ${workspaceName}`);
+      log.debug().str('workspaceName', workspaceName).msg('Got tracker');
       return data.Item as RepositoryTracker;
     } catch (error) {
-      logger.error(`Could not get tracker for workspace: ${workspaceName}`, {
-        error,
-      });
+      log
+        .error()
+        .err(error)
+        .str('workspaceName', workspaceName)
+        .msg('Could not get tracker');
       return undefined;
     }
   }

@@ -1,3 +1,4 @@
+import {expect, describe, Mocked, vi, beforeEach, it, beforeAll} from 'vitest';
 import axios from 'axios';
 import {BitbucketServicesHelper} from './bitbucket-services-helper';
 import {
@@ -5,13 +6,21 @@ import {
   WebhookResponse,
   RepositoryWebhookResponse,
 } from './bitbucket-services-model';
+import * as logging from '@nr1e/logging';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+beforeAll(async () => {
+  await logging.initialize({
+    svc: 'bitbucket-service-helper.test',
+    level: 'trace',
+  });
+});
+
+vi.mock('axios');
+const mockedAxios = axios as Mocked<typeof axios>;
 
 describe('bitbucket-services-helper', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('BitbucketServicesHelper.getRepositories', () => {
