@@ -6,8 +6,10 @@ import axios, {
   AxiosResponse,
   Method,
 } from 'axios';
-import {logger} from '../logging-utils/logger';
 import {ThrottlingError} from './throttling-error';
+import * as logging from '@nr1e/logging';
+
+const log = logging.getLogger('timed-exponential-backoff');
 
 export class TimedExponentialBackoff {
   private readonly initialDelay: number;
@@ -50,7 +52,7 @@ export class TimedExponentialBackoff {
     data?: any,
     retries = 3
   ): Promise<AxiosResponse<any>> {
-    logger.debug(`Retries left: ${retries} `);
+    log.debug().num('retries', retries).msg('Retries left');
     const config: AxiosRequestConfig = {
       method: method,
       url: url,
@@ -72,23 +74,15 @@ export class TimedExponentialBackoff {
 
           if (retryAfter) {
             retryAfter = retryAfter * 1000;
-            logger.info(
-              `API Timed Back off:: Rate limit exceeded. Retrying after ${
-                retryAfter / 1000
-              } seconds.`
-            );
+            log
+              .info()
+              .num('retryAfter', retryAfter)
+              .msg('API Timed Back off:: Rate limit exceeded');
           } else {
             retryAfter = this.delay();
-            logger.info(
-              `Exponential Back off:: Rate limit exceeded. Retrying after ${
-                retryAfter / 1000
-              } seconds.`
-            );
+            log.info().num('retryAfter', retryAfter).msg('Rate limit exceeded');
           }
-
-          logger.info(
-            `Rate limit exceeded. Retrying after ${retryAfter / 1000} seconds.`
-          );
+          log.info().num('retryAfter', retryAfter).msg('Rate limit exceeded');
           await new Promise(resolve => setTimeout(resolve, retryAfter));
           return this.makeRequest(url, method, headers, data, retries - 1); // Retry the request
         } else {

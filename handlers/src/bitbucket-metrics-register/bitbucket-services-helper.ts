@@ -5,9 +5,10 @@ import {
   WebhookRequest,
   WebhookResponse,
 } from './bitbucket-services-model';
-import {logger} from '../logging-utils/logger';
 import {TimedExponentialBackoff} from '../metrics-utilities/timed-exponential-backoff';
+import * as logging from '@nr1e/logging';
 
+const log = logging.getLogger('bitbucket-services-helper');
 const REMAINING_TIME_HEADER_NAME = 'retry-after-time';
 
 export class BitbucketServicesHelper {
@@ -31,9 +32,11 @@ export class BitbucketServicesHelper {
       Accept: 'application/json',
     });
 
-    logger.debug(
-      `Repository Response: ${response.status} ${response.statusText}`
-    );
+    log
+      .debug()
+      .num('status', response.status)
+      .str('statusText', response.statusText)
+      .msg('Repository response');
     return response.data as RepositoriesResponse;
   }
 
@@ -81,10 +84,11 @@ export class BitbucketServicesHelper {
       },
       webhookRequest
     );
-
-    logger.debug(
-      `Webhook Creation Response: ${response.status} ${response.statusText}`
-    );
+    log
+      .debug()
+      .num('status', response.status)
+      .str('statusText', response.statusText)
+      .msg('Webhook Creation Response');
     return response.data as WebhookResponse;
   }
 
@@ -111,9 +115,11 @@ export class BitbucketServicesHelper {
       webhookRequest
     );
 
-    logger.debug(
-      `Webhook Update Response: ${response.status} ${response.statusText}`
-    );
+    log
+      .debug()
+      .num('status', response.status)
+      .str('statusText', response.statusText)
+      .msg('Webhook Update Response');
     return response.data as WebhookResponse;
   }
 
@@ -132,9 +138,10 @@ export class BitbucketServicesHelper {
       Accept: 'application/json',
     });
 
-    logger.debug(
-      `Repository Webhook Response: ${response.status} ${response.statusText}`
-    );
+    log
+      .debug()
+      .num('status', response.status)
+      .msg('Repository Webhook Response');
     return response.data as RepositoryWebhookResponse;
   }
 }

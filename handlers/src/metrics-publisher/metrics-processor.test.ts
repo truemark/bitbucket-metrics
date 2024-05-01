@@ -2,15 +2,21 @@ import {BitBucketMetricsProcessor} from './metrics-processor';
 import {BitbucketMetricsPublisher} from './bitbucket-metrics-publisher';
 import {StandardUnit} from '@aws-sdk/client-cloudwatch';
 import {MetricsUtilities} from '../metrics-utilities/metrics-utilities';
+import {vi, beforeEach, expect, Mock, it, describe, beforeAll} from 'vitest';
+import * as logging from '@nr1e/logging';
 
-jest.mock('./bitbucket-metrics-publisher');
+beforeAll(async () => {
+  await logging.initialize({svc: 'metrics-processor.test', level: 'trace'});
+});
+
+vi.mock('./bitbucket-metrics-publisher');
 
 describe('BitBucketMetricsProcessor.process', () => {
-  let mockPublish: jest.Mock;
+  let mockPublish: Mock;
 
   beforeEach(() => {
-    mockPublish = jest.fn();
-    (BitbucketMetricsPublisher as jest.Mock).mockImplementation(() => {
+    mockPublish = vi.fn();
+    (BitbucketMetricsPublisher as Mock).mockImplementation(() => {
       return {
         publish: mockPublish,
       };

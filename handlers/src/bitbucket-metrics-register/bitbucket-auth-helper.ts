@@ -2,8 +2,9 @@ import {
   GetSecretValueCommand,
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
-import {logger} from '../logging-utils/logger';
+import * as logging from '@nr1e/logging';
 
+const log = logging.getLogger('bitbucket-auth-helper');
 const AWS_REGION = process.env.AWS_REGION;
 const secretsManagerClient = new SecretsManagerClient({region: AWS_REGION});
 
@@ -26,10 +27,10 @@ export class BitbucketAuthHelper {
         SecretId: secretName,
       });
       const response = await secretsManagerClient.send(command);
-      logger.debug('Secrets Manager response received');
+      log.debug().msg('Secrets Manager response received');
       return JSON.parse(response!.SecretString!);
     } catch (error) {
-      logger.error('Error occurred while fetching secret', {error});
+      log.error().err(error).msg('Error occurred while fetching secret');
       throw new Error('Error occurred while fetching secret');
     }
   }

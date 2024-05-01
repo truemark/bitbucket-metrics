@@ -1,7 +1,8 @@
 *.js
 !jest.config.js
 !.prettierrc.js
-*.d.ts
+*.d.*
+coverage
 node_modules
 notes.txt
 *.map
