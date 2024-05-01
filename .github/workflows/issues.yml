@@ -6,9 +6,6 @@ on:
 jobs:
   add-to-project:
     name: Add issue to project
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/add-to-project@v1.0.1
-        with:
-          project-url: https://github.com/orgs/truemark/projects/2
-          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+    uses: truemark/github-workflows/.github/workflows/issues.yml@main
+    secrets:
+      add_to_project_pat: ${{ secrets.ADD_TO_PROJECT_PAT }}
