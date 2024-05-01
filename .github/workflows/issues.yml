@@ -1,5 +1,5 @@
-name: Add issues to project
 on:
+  pull_request:
   issues:
     types:
       - opened
