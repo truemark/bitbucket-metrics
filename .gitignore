@@ -5,6 +5,7 @@
 node_modules
 notes.txt
 *.map
+coverage
 
 # CDK asset staging directory
 .cdk.staging
