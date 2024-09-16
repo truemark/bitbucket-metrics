@@ -18,6 +18,6 @@
     "watch": "concurrently \"pnpm:watch-handlers\" \"pnpm:watch-cdk\" -c blue,green"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^9.0.1"
   }
 }
