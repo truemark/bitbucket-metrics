@@ -1,9 +1,11 @@
-import {logger} from '../logging-utils/logger';
 import {
   EventBridgeClient,
   PutRuleCommand,
   PutTargetsCommand,
 } from '@aws-sdk/client-eventbridge';
+import * as logging from '@nr1e/logging';
+
+const log = logging.getLogger('event-bridge-utils');
 
 const eventBridge = new EventBridgeClient({region: process.env.AWS_REGION});
 export class EventBridgeUtils {
@@ -13,9 +15,11 @@ export class EventBridgeUtils {
     lambdaArn: string,
     retryTime: Date
   ) {
-    logger.info(
-      `Scheduling cron job: ${lambdaName} at ${retryTime} and arn: ${lambdaArn}`
-    );
+    log
+      .info()
+      .str('lambdaName', lambdaName)
+      .str('retryTime', retryTime.toString())
+      .msg('Scheduling cron job');
 
     const ruleName = `${cronPrefix}-Retry`;
     await eventBridge.send(

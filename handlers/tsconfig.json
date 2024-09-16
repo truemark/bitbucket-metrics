@@ -1,6 +1,15 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "lib": ["ES2022", "dom"],
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
+    "types": ["vitest", "node"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true

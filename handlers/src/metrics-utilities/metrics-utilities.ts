@@ -1,7 +1,9 @@
 import path from 'path';
 import fs from 'fs';
-import {logger} from '../logging-utils/logger';
 import {AxiosError, AxiosRequestHeaders, AxiosResponse} from 'axios';
+import * as logging from '@nr1e/logging';
+
+const log = logging.getLogger('metrics-utilities');
 
 export class MetricsUtilities {
   public static createRepositorySlug(repositoryName: string): string {
@@ -18,7 +20,7 @@ export class MetricsUtilities {
       const data = fs.readFileSync(jsonFilePath, 'utf8');
       return JSON.parse(data);
     } catch (error) {
-      logger.error('Error reading file from disk', {error});
+      log.error().err(error).msg('Error reading file from disk');
     }
   }
 

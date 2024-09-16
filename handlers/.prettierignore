@@ -1,5 +1,8 @@
+coverage
+node_modules
 pnpm-lock.yaml
 **/**/*.js
-src/**/*.d.ts
+**/**/*.mjs
+src/**/*.d.*
 test/data/**/*.json
 

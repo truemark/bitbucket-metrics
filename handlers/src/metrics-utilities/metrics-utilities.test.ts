@@ -1,4 +1,10 @@
 import {MetricsUtilities} from './metrics-utilities';
+import {expect, it, describe, beforeAll} from 'vitest';
+import * as logging from '@nr1e/logging';
+
+beforeAll(async () => {
+  await logging.initialize({svc: 'metrics-utilities.test', level: 'trace'});
+});
 
 describe('metrics-utilities', () => {
   describe('createRepositorySlug', () => {

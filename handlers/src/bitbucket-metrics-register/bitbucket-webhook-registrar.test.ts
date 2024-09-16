@@ -2,31 +2,49 @@ import {BitbucketServicesHelper} from './bitbucket-services-helper';
 import {BitbucketWebhookRegistrar} from './bitbucket-webhook-registrar';
 import {MetricsUtilities} from '../metrics-utilities/metrics-utilities';
 import {BitbucketAuthHelper} from './bitbucket-auth-helper';
+import {
+  expect,
+  test,
+  describe,
+  MockedFunction,
+  vi,
+  beforeEach,
+  afterEach,
+  beforeAll,
+} from 'vitest';
+import * as logging from '@nr1e/logging';
 
-jest.mock('./bitbucket-auth-helper');
-jest.mock('./bitbucket-services-helper');
+beforeAll(async () => {
+  await logging.initialize({
+    svc: 'bitbucket-webhook-registrar.test',
+    level: 'trace',
+  });
+});
 
-const mockedGetScmData = BitbucketAuthHelper.getScmData as jest.MockedFunction<
+vi.mock('./bitbucket-auth-helper');
+vi.mock('./bitbucket-services-helper');
+
+const mockedGetScmData = BitbucketAuthHelper.getScmData as MockedFunction<
   typeof BitbucketAuthHelper.getScmData
 >;
 
 const mockedGetRepositoriesPaginated =
-  BitbucketServicesHelper.getRepositoriesPaginated as jest.MockedFunction<
+  BitbucketServicesHelper.getRepositoriesPaginated as MockedFunction<
     typeof BitbucketServicesHelper.getRepositoriesPaginated
   >;
 
 const mockedGetRepositoryWebhook =
-  BitbucketServicesHelper.getRepositoryWebhooks as jest.MockedFunction<
+  BitbucketServicesHelper.getRepositoryWebhooks as MockedFunction<
     typeof BitbucketServicesHelper.getRepositoryWebhooks
   >;
 
 const mockedCreateRepositoryWebhook =
-  BitbucketServicesHelper.createRepositoryWebhook as jest.MockedFunction<
+  BitbucketServicesHelper.createRepositoryWebhook as MockedFunction<
     typeof BitbucketServicesHelper.createRepositoryWebhook
   >;
 
 const mockedUpdateRepositoryWebhook =
-  BitbucketServicesHelper.updateRepositoryWebhook as jest.MockedFunction<
+  BitbucketServicesHelper.updateRepositoryWebhook as MockedFunction<
     typeof BitbucketServicesHelper.updateRepositoryWebhook
   >;
 
@@ -40,7 +58,7 @@ describe('BitbucketWebhookRegistrar.register', () => {
 
   afterEach(() => {
     delete process.env.SCM_SECRET_MANAGER_NAME;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('should register webhooks for all repositories in all workspaces', async () => {

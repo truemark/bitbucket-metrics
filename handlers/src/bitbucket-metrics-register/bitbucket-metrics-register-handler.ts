@@ -1,8 +1,10 @@
 import {Context} from 'aws-lambda';
 import {BitbucketWebhookRegistrar} from './bitbucket-webhook-registrar';
-import {logger} from '../logging-utils/logger';
 import {ThrottlingError} from '../metrics-utilities/throttling-error';
 import {EventBridgeUtils} from '../metrics-utilities/event-bridge-utils';
+import * as logging from '@nr1e/logging';
+
+const log = logging.getRootLogger();
 
 interface CronEvent {
   version: string;
@@ -20,9 +22,15 @@ export async function handler(
   event: CronEvent,
   context: Context
 ): Promise<{statusCode: number; body: string}> {
-  logger.debug(`Received Cron event: ${JSON.stringify(event, null, 2)}`);
-  logger.debug(`Context: ${JSON.stringify(context, null, 2)}`);
-
+  await logging.initialize({
+    svc: 'bitbucket-metrics-register-handler',
+    level: 'debug',
+  });
+  log
+    .debug()
+    .obj('event', event)
+    .obj('context', context)
+    .msg('Received cron event');
   try {
     // Register webhooks for Bitbucket repositories
     const bitbucketWebhookRegistrar = await BitbucketWebhookRegistrar.create();
@@ -33,7 +41,7 @@ export async function handler(
   } catch (error) {
     if (error instanceof ThrottlingError) {
       // Handle ThrottlingError
-      console.error('ThrottlingError occurred:', error.message);
+      log.error().err(error).msg('ThrottlingError occurred');
       const retryTime = new Date();
       retryTime.setMinutes(retryTime.getMinutes() + 61); // Start after an hour
       await EventBridgeUtils.scheduleCron(
